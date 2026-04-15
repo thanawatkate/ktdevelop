@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const navLinks = [
   { href: "#home", labelKey: "home" },
@@ -41,7 +42,7 @@ export function SiteHeader() {
               onClick={(e) => handleAnchorClick(e, href)}
               className="rounded-full px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
             >
-              {labelKey === "services" ? "Services" : t(labelKey)}
+              {t(labelKey)}
             </a>
           ))}
           <Link
@@ -50,6 +51,9 @@ export function SiteHeader() {
           >
             {t("admin")}
           </Link>
+          <div className="ml-2">
+            <LanguageSwitcher />
+          </div>
         </nav>
       </div>
     </header>

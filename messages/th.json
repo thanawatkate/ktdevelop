@@ -1,8 +1,9 @@
 {
   "navigation": {
     "home": "หน้าแรก",
-    "contact": "ติดต่อ",
+    "services": "บริการ",
     "portfolio": "พอร์ตโฟลิโอ",
+    "contact": "ติดต่อ",
     "admin": "ผู้ดูแล"
   },
   "common": {
@@ -12,5 +13,36 @@
     "loading": "กำลังโหลด...",
     "error": "เกิดข้อผิดพลาด",
     "submit": "ส่ง"
+  },
+  "contact": {
+    "officeLabel": "สำนักงาน",
+    "whyLabel": "ทำไมทีมงานถึงเลือกเรา"
+  },
+  "contactForm": {
+    "name": "ชื่อ",
+    "namePlaceholder": "ชื่อ-นามสกุลของคุณ",
+    "email": "อีเมล",
+    "emailPlaceholder": "name@company.com",
+    "subject": "หัวข้อ",
+    "subjectPlaceholder": "ตัวอย่าง: ขอเสนอราคาพัฒนาเว็บไซต์องค์กร",
+    "message": "ข้อความ",
+    "messagePlaceholder": "อธิบายขอบเขตโปรเจกต์ กำหนดเวลา ผู้มีส่วนได้ส่วนเสีย และผลลัพธ์ที่ต้องการ",
+    "file": "แนบ TOR / เอกสารโปรเจกต์",
+    "fileHint": "ไม่บังคับ รองรับ PDF, DOC, DOCX ขนาดสูงสุด 10MB",
+    "send": "ส่งข้อมูล",
+    "sending": "กำลังส่ง...",
+    "successMessage": "ส่งข้อมูลเรียบร้อยแล้ว ทีมงานจะติดต่อกลับโดยเร็ว",
+    "errorSubmit": "ไม่สามารถส่งข้อมูลได้",
+    "errorName": "กรุณากรอกชื่อ-นามสกุล",
+    "errorEmailRequired": "กรุณากรอกอีเมลที่ทำงาน",
+    "errorEmailInvalid": "กรุณากรอกอีเมลในรูปแบบที่ถูกต้อง",
+    "errorSubject": "กรุณาระบุหัวข้อ",
+    "errorMessage": "กรุณาอธิบายโปรเจกต์หรือความต้องการ",
+    "errorMessageMin": "กรุณากรอกข้อมูลอย่างน้อย 20 ตัวอักษร",
+    "errorFileType": "รองรับเฉพาะไฟล์ PDF, DOC หรือ DOCX เท่านั้น",
+    "errorFileSize": "ขนาดไฟล์ต้องไม่เกิน 10MB"
+  },
+  "footer": {
+    "copyright": "© {year} KT Develop สงวนลิขสิทธิ์"
   }
 }

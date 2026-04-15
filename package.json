@@ -19,6 +19,7 @@
     "db:migrate:down": "dotenv -e .env -- db-migrate down --env dev",
     "db:migrate:status": "dotenv -e .env -- db-migrate up --count 0 --env dev",
     "db:setup": "npm run db:create && npm run db:migrate",
+    "db:seed:content": "dotenv -e .env -- node src/scripts/seed-content.js",
     "db:migrate:create": "db-migrate create",
     "db:migrate:prod": "db-migrate up --env production"
   },

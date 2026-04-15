@@ -1,8 +1,9 @@
 {
   "navigation": {
     "home": "Home",
-    "contact": "Contact",
+    "services": "Services",
     "portfolio": "Portfolio",
+    "contact": "Contact",
     "admin": "Admin"
   },
   "common": {
@@ -12,5 +13,33 @@
     "loading": "Loading...",
     "error": "Error occurred",
     "submit": "Submit"
+  },
+  "contactForm": {
+    "name": "Name",
+    "namePlaceholder": "Your full name",
+    "email": "Email",
+    "emailPlaceholder": "name@company.com",
+    "subject": "Subject",
+    "subjectPlaceholder": "Example: Request for enterprise website proposal",
+    "message": "Message",
+    "messagePlaceholder": "Share your project scope, timeline, stakeholders, and target outcomes.",
+    "file": "Upload TOR / Brief",
+    "fileHint": "Optional. Accepted formats: PDF, DOC, DOCX. Maximum 10MB.",
+    "send": "Send Inquiry",
+    "sending": "Submitting...",
+    "successMessage": "Your inquiry has been sent. Our team will contact you shortly.",
+    "errorSubmit": "Unable to submit the form.",
+    "errorName": "Please enter your full name.",
+    "errorEmailRequired": "Please enter your work email.",
+    "errorEmailInvalid": "Please enter a valid email address.",
+    "errorSubject": "Please add a subject for your request.",
+    "errorMessage": "Please describe your project or requirement.",
+    "errorMessageMin": "Please provide at least 20 characters of detail.",
+    "errorFileType": "Upload a PDF, DOC, or DOCX file only.",
+    "errorFileSize": "File size must not exceed 10MB."
+  },
+  "contact": {
+    "officeLabel": "Office",
+    "whyLabel": "Why Teams Choose Us"
   }
 }
