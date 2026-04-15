@@ -1,0 +1,16 @@
+{
+  "navigation": {
+    "home": "หน้าแรก",
+    "contact": "ติดต่อ",
+    "portfolio": "พอร์ตโฟลิโอ",
+    "admin": "ผู้ดูแล"
+  },
+  "common": {
+    "language": "ภาษา",
+    "thai": "ไทย",
+    "english": "English",
+    "loading": "กำลังโหลด...",
+    "error": "เกิดข้อผิดพลาด",
+    "submit": "ส่ง"
+  }
+}

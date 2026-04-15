@@ -1,0 +1,16 @@
+{
+  "navigation": {
+    "home": "Home",
+    "contact": "Contact",
+    "portfolio": "Portfolio",
+    "admin": "Admin"
+  },
+  "common": {
+    "language": "Language",
+    "thai": "ไทย",
+    "english": "English",
+    "loading": "Loading...",
+    "error": "Error occurred",
+    "submit": "Submit"
+  }
+}
