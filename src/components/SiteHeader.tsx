@@ -3,37 +3,50 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+const navLinks = [
+  { href: "#home", labelKey: "home" },
+  { href: "#services", labelKey: "services" },
+  { href: "#portfolio", labelKey: "portfolio" },
+  { href: "#contact", labelKey: "contact" },
+] as const;
+
 export function SiteHeader() {
   const t = useTranslations("navigation");
 
+  function handleAnchorClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const el = document.querySelector(href);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }
+
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-        <Link href="/" className="text-lg font-semibold tracking-tight text-slate-900">
+        <a
+          href="#home"
+          onClick={(e) => handleAnchorClick(e, "#home")}
+          className="text-lg font-bold tracking-tight text-white"
+        >
           KT Develop
-        </Link>
-        <nav className="flex items-center gap-2 sm:gap-3">
-          <Link
-            href="/"
-            className="rounded-full px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
-          >
-            {t("home")}
-          </Link>
-          <Link
-            href="/portfolio"
-            className="rounded-full px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
-          >
-            {t("portfolio")}
-          </Link>
-          <Link
-            href="/contact"
-            className="rounded-full px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900"
-          >
-            {t("contact")}
-          </Link>
+        </a>
+        <nav className="flex items-center gap-1 sm:gap-2">
+          {navLinks.map(({ href, labelKey }) => (
+            <a
+              key={href}
+              href={href}
+              onClick={(e) => handleAnchorClick(e, href)}
+              className="rounded-full px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
+            >
+              {labelKey === "services" ? "Services" : t(labelKey)}
+            </a>
+          ))}
           <Link
             href="/admin"
-            className="rounded-full border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100 hover:text-indigo-900"
+            className="ml-2 rounded-full border border-indigo-500/40 bg-indigo-600/20 px-4 py-2 text-sm font-medium text-indigo-300 transition hover:bg-indigo-600/40 hover:text-white"
           >
             {t("admin")}
           </Link>

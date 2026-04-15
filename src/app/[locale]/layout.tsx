@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import { SiteHeader } from "../../components/SiteHeader";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
@@ -17,16 +19,20 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export default function LocaleLayout({
+export default async function LocaleLayout({
   children,
   params,
 }: Readonly<{
   children: ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }>) {
-  if (!locales.includes(params.locale)) {
+  const { locale } = await params;
+
+  if (!locales.includes(locale)) {
     notFound();
   }
+
+  const messages = await getMessages();
 
   const langMap: Record<string, string> = {
     th: "th",
@@ -34,10 +40,12 @@ export default function LocaleLayout({
   };
 
   return (
-    <html lang={langMap[params.locale] || "en"}>
+    <html lang={langMap[locale] || "en"}>
       <body>
-        <SiteHeader />
-        {children}
+        <NextIntlClientProvider messages={messages}>
+          <SiteHeader />
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );
