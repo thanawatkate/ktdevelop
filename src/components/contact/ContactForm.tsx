@@ -2,6 +2,7 @@
 
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useTranslations } from "next-intl";
+import { FormInput, FormTextarea } from "../forms";
 
 interface FormErrors {
   senderName?: string;
@@ -132,70 +133,54 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
       <div className="grid gap-6 md:grid-cols-2">
-        <div>
-          <label htmlFor="senderName" className="block text-sm font-medium text-slate-900">
-            {t("name")}
-          </label>
-          <input
-            id="senderName"
-            name="senderName"
-            type="text"
-            value={formState.senderName}
-            onChange={handleChange}
-            className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none ring-0 transition focus:border-indigo-600"
-            placeholder={t("namePlaceholder")}
-          />
-          {errors.senderName ? <p className="mt-2 text-sm text-rose-600">{errors.senderName}</p> : null}
-        </div>
-
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-slate-900">
-            {t("email")}
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            value={formState.email}
-            onChange={handleChange}
-            className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none ring-0 transition focus:border-indigo-600"
-            placeholder="name@company.com"
-          />
-          {errors.email ? <p className="mt-2 text-sm text-rose-600">{errors.email}</p> : null}
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="subject" className="block text-sm font-medium text-slate-900">
-          {t("subject")}
-        </label>
-        <input
-          id="subject"
-          name="subject"
+        <FormInput
+          id="senderName"
+          name="senderName"
           type="text"
-          value={formState.subject}
+          label={t("name")}
+          value={formState.senderName}
           onChange={handleChange}
-          className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none ring-0 transition focus:border-indigo-600"
-          placeholder={t("subjectPlaceholder")}
+          placeholder={t("namePlaceholder")}
+          inputClassName="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none ring-0 transition focus:border-indigo-600"
+          error={errors.senderName}
         />
-        {errors.subject ? <p className="mt-2 text-sm text-rose-600">{errors.subject}</p> : null}
+
+        <FormInput
+          id="email"
+          name="email"
+          type="email"
+          label={t("email")}
+          value={formState.email}
+          onChange={handleChange}
+          placeholder="name@company.com"
+          inputClassName="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none ring-0 transition focus:border-indigo-600"
+          error={errors.email}
+        />
       </div>
 
-      <div>
-        <label htmlFor="message" className="block text-sm font-medium text-slate-900">
-          {t("message")}
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          rows={6}
-          value={formState.message}
-          onChange={handleChange}
-          className="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none ring-0 transition focus:border-indigo-600"
-          placeholder={t("messagePlaceholder")}
-        />
-        {errors.message ? <p className="mt-2 text-sm text-rose-600">{errors.message}</p> : null}
-      </div>
+      <FormInput
+        id="subject"
+        name="subject"
+        type="text"
+        label={t("subject")}
+        value={formState.subject}
+        onChange={handleChange}
+        placeholder={t("subjectPlaceholder")}
+        inputClassName="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none ring-0 transition focus:border-indigo-600"
+        error={errors.subject}
+      />
+
+      <FormTextarea
+        id="message"
+        name="message"
+        rows={6}
+        label={t("message")}
+        value={formState.message}
+        onChange={handleChange}
+        placeholder={t("messagePlaceholder")}
+        textareaClassName="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none ring-0 transition focus:border-indigo-600"
+        error={errors.message}
+      />
 
       <div>
         <label htmlFor="file" className="block text-sm font-medium text-slate-900">

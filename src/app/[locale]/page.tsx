@@ -1,6 +1,6 @@
-import { ContactForm } from "../../components/ContactForm";
+import { ContactForm } from "../../components/contact";
 import { AdminInlineContentEditor } from "../../components/admin/AdminInlineContentEditor";
-import { PortfolioGrid } from "../../components/PortfolioGrid";
+import { PortfolioGrid } from "../../components/portfolio";
 import { GetAllPortfolios } from "../../core/use-cases/GetAllPortfolios";
 import { ContentRepository } from "../../infrastructure/repositories/ContentRepository";
 import { PortfolioRepository } from "../../infrastructure/repositories/PortfolioRepository";

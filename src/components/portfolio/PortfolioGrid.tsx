@@ -1,4 +1,4 @@
-import { Portfolio } from "../infrastructure/repositories/PortfolioRepository";
+import { Portfolio } from "../../infrastructure/repositories/PortfolioRepository";
 
 interface PortfolioGridProps {
   portfolios: Portfolio[];

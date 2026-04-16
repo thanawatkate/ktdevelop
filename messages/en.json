@@ -41,5 +41,40 @@
   "contact": {
     "officeLabel": "Office",
     "whyLabel": "Why Teams Choose Us"
+  },
+  "quote": {
+    "title": "Get an Instant Quote",
+    "subtitle": "Select a service package and receive an automated quotation in seconds",
+    "selectPackage": "Select Service Package",
+    "selectPackageDesc": "Choose the package that best fits your needs",
+    "continueButton": "Continue with Selected Package",
+    "selectedPackage": "Selected Package",
+    "backToPackages": "← Back to Packages",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "additionalRequirements": "Additional Requirements",
+    "additionalRequirementsPlaceholder": "Describe any additional requirements for your project...",
+    "discount": "Discount (%)",
+    "generateButton": "Generate Quote",
+    "generatingButton": "Generating...",
+    "cancelButton": "Cancel",
+    "successTitle": "✓ Quote Generated Successfully",
+    "quoteNumber": "Quote Number",
+    "totalAmount": "Total Amount",
+    "client": "Client",
+    "discount": "Discount",
+    "downloadPDF": "📥 Download PDF",
+    "newQuote": "Generate New Quote",
+    "validityText": "Quote is valid for 30 days. A confirmation email has been sent to {email}",
+    "required": "* Required fields",
+    "errorNameRequired": "Name is required",
+    "errorEmailRequired": "Email is required",
+    "errorEmailInvalid": "Invalid email format",
+    "errorDiscountRange": "Discount must be between 0 and 100",
+    "loadingPackages": "Loading packages..."
+  },
+  "footer": {
+    "copyright": "© {year} KT Develop. All rights reserved."
   }
 }

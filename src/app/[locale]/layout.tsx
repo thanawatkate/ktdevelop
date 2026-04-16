@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { SiteHeader } from "../../components/SiteHeader";
+import { SiteHeader } from "../../components/layout";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
 
@@ -34,19 +34,10 @@ export default async function LocaleLayout({
 
   const messages = await getMessages();
 
-  const langMap: Record<string, string> = {
-    th: "th",
-    en: "en",
-  };
-
   return (
-    <html lang={langMap[locale] || "en"}>
-      <body>
-        <NextIntlClientProvider messages={messages}>
-          <SiteHeader />
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages} locale={locale}>
+      <SiteHeader />
+      {children}
+    </NextIntlClientProvider>
   );
 }

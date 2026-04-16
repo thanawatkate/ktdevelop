@@ -14,7 +14,7 @@ export class ContentRepository {
   async getBySection(locale: string, section: string): Promise<Record<string, string>> {
     try {
       const [rows] = await dbPool.query(
-        'SELECT key_name, content FROM content_translations WHERE locale = ? AND section = ?',
+        'SELECT key_name, content FROM localized_content WHERE locale = ? AND section = ?',
         [locale, section]
       );
 
@@ -33,7 +33,7 @@ export class ContentRepository {
   async getByKey(locale: string, section: string, key: string): Promise<string | null> {
     try {
       const [rows] = await dbPool.query(
-        'SELECT content FROM content_translations WHERE locale = ? AND section = ? AND key_name = ?',
+        'SELECT content FROM localized_content WHERE locale = ? AND section = ? AND key_name = ?',
         [locale, section, key]
       );
 
@@ -48,7 +48,7 @@ export class ContentRepository {
   async upsert(locale: string, section: string, key: string, content: string): Promise<boolean> {
     try {
       await dbPool.query(
-        `INSERT INTO content_translations (locale, section, key_name, content)
+        `INSERT INTO localized_content (locale, section, key_name, content)
          VALUES (?, ?, ?, ?)
          ON DUPLICATE KEY UPDATE content = VALUES(content), updatedAt = CURRENT_TIMESTAMP`,
         [locale, section, key, content]
@@ -63,7 +63,7 @@ export class ContentRepository {
   async getAllSections(locale: string): Promise<Record<string, Record<string, string>>> {
     try {
       const [rows] = await dbPool.query(
-        'SELECT section, key_name, content FROM content_translations WHERE locale = ? ORDER BY section, key_name',
+        'SELECT section, key_name, content FROM localized_content WHERE locale = ? ORDER BY section, key_name',
         [locale]
       );
 
@@ -95,7 +95,7 @@ export class ContentRepository {
       for (const key of keys) {
         const value = entries[key];
         await connection.query(
-          `INSERT INTO content_translations (locale, section, key_name, content)
+          `INSERT INTO localized_content (locale, section, key_name, content)
            VALUES (?, ?, ?, ?)
            ON DUPLICATE KEY UPDATE content = VALUES(content), updatedAt = CURRENT_TIMESTAMP`,
           [locale, section, key, value]

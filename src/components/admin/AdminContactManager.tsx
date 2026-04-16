@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FormInput, FormSelect } from "../forms";
 
 interface ContactItem {
   id: number;
@@ -391,11 +392,12 @@ export function AdminContactManager() {
       </div>
 
       <form className="mt-5 flex flex-wrap gap-3" onSubmit={handleSearch}>
-        <input
+        <FormInput
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search by sender, email, subject, message"
-          className="min-w-[280px] flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
+          containerClassName="min-w-[280px] flex-1"
+          inputClassName="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
         />
         <button
           type="submit"
@@ -403,19 +405,19 @@ export function AdminContactManager() {
         >
           Search
         </button>
-        <input
+        <FormInput
           type="date"
           value={fromDate}
           onChange={(event) => setFromDate(event.target.value)}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
-          aria-label="From date"
+          inputClassName="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
+          containerClassName="flex-none"
         />
-        <input
+        <FormInput
           type="date"
           value={toDate}
           onChange={(event) => setToDate(event.target.value)}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
-          aria-label="To date"
+          inputClassName="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
+          containerClassName="flex-none"
         />
         <button
           type="button"
@@ -430,17 +432,19 @@ export function AdminContactManager() {
         >
           Clear
         </button>
-        <select
+        <FormSelect
+          id="statusFilter"
           value={statusFilter}
-          onChange={(event) => setStatusFilter(event.target.value as "all" | "new" | "in_progress" | "closed")}
-          className="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
-          aria-label="Status filter"
-        >
-          <option value="all">All status</option>
-          <option value="new">New</option>
-          <option value="in_progress">In Progress</option>
-          <option value="closed">Closed</option>
-        </select>
+          onChange={(event: ChangeEvent<HTMLSelectElement>) => setStatusFilter(event.target.value as "all" | "new" | "in_progress" | "closed")}
+          selectClassName="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
+          containerClassName="flex-none"
+          options={[
+            { value: "all", label: "All status" },
+            { value: "new", label: "New" },
+            { value: "in_progress", label: "In Progress" },
+            { value: "closed", label: "Closed" },
+          ]}
+        />
       </form>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">

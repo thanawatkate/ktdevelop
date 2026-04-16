@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FormCheckbox, FormInput, FormTextarea } from "../forms";
 
 interface PortfolioItem {
   id: number;
@@ -203,67 +204,45 @@ export function AdminPortfolioManager() {
         <form onSubmit={handleSubmit} className="space-y-5 rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-900">{editingId ? "Edit Portfolio" : "Add Portfolio"}</h2>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-900" htmlFor="title">
-              Project Title
-            </label>
-            <input
-              id="title"
-              required
-              value={formState.title}
-              onChange={(event) => setFormState((prev) => ({ ...prev, title: event.target.value }))}
-              className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
-            />
-          </div>
+          <FormInput
+            id="title"
+            label="Project Title"
+            required
+            value={formState.title}
+            onChange={(event) => setFormState((prev) => ({ ...prev, title: event.target.value }))}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-slate-900" htmlFor="client_name">
-              Client Name
-            </label>
-            <input
-              id="client_name"
-              required
-              value={formState.client_name}
-              onChange={(event) => setFormState((prev) => ({ ...prev, client_name: event.target.value }))}
-              className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
-            />
-          </div>
+          <FormInput
+            id="client_name"
+            label="Client Name"
+            required
+            value={formState.client_name}
+            onChange={(event) => setFormState((prev) => ({ ...prev, client_name: event.target.value }))}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-slate-900" htmlFor="image_url">
-              Image URL
-            </label>
-            <input
-              id="image_url"
-              value={formState.image_url}
-              onChange={(event) => setFormState((prev) => ({ ...prev, image_url: event.target.value }))}
-              className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
-              placeholder="https://..."
-            />
-          </div>
+          <FormInput
+            id="image_url"
+            label="Image URL"
+            value={formState.image_url}
+            onChange={(event) => setFormState((prev) => ({ ...prev, image_url: event.target.value }))}
+            placeholder="https://..."
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-slate-900" htmlFor="description">
-              Description
-            </label>
-            <textarea
-              id="description"
-              rows={5}
-              required
-              value={formState.description}
-              onChange={(event) => setFormState((prev) => ({ ...prev, description: event.target.value }))}
-              className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
-            />
-          </div>
+          <FormTextarea
+            id="description"
+            label="Description"
+            rows={5}
+            required
+            value={formState.description}
+            onChange={(event) => setFormState((prev) => ({ ...prev, description: event.target.value }))}
+          />
 
-          <label className="flex items-center gap-2 text-sm text-slate-700">
-            <input
-              type="checkbox"
-              checked={formState.is_published}
-              onChange={(event) => setFormState((prev) => ({ ...prev, is_published: event.target.checked }))}
-            />
-            Publish immediately
-          </label>
+          <FormCheckbox
+            label="Publish immediately"
+            checked={formState.is_published}
+            onChange={(event) => setFormState((prev) => ({ ...prev, is_published: event.target.checked }))}
+            labelClassName="flex items-center gap-2 text-sm text-slate-700"
+          />
 
           {error ? <p className="text-sm text-rose-600">{error}</p> : null}
           {message ? <p className="text-sm text-emerald-700">{message}</p> : null}

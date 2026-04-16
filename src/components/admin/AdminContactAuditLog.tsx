@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FormInput } from "../forms";
 
 interface ContactStatusAuditItem {
   id: number;
@@ -96,11 +97,12 @@ export function AdminContactAuditLog() {
           void fetchAudits(1);
         }}
       >
-        <input
+        <FormInput
+          containerClassName="min-w-[220px]"
           value={contactIdFilter}
           onChange={(event) => setContactIdFilter(event.target.value.replace(/[^0-9]/g, ""))}
           placeholder="Filter by Contact ID"
-          className="min-w-[220px] rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
+          inputClassName="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
         />
         <button
           type="submit"

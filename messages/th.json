@@ -42,7 +42,39 @@
     "errorFileType": "รองรับเฉพาะไฟล์ PDF, DOC หรือ DOCX เท่านั้น",
     "errorFileSize": "ขนาดไฟล์ต้องไม่เกิน 10MB"
   },
+  "quote": {
+    "title": "ขอใบเสนอราคาทันที",
+    "subtitle": "เลือกแพ็กเกจบริการและรับใบเสนอราคาอัตโนมัติภายในไม่กี่วินาที",
+    "selectPackage": "เลือกแพ็กเกจบริการ",
+    "selectPackageDesc": "เลือกแพ็กเกจที่เหมาะสมกับความต้องการของคุณ",
+    "continueButton": "ไปต่อด้วยแพ็กเกจที่เลือก",
+    "selectedPackage": "แพ็กเกจที่เลือก",
+    "backToPackages": "← กลับไปที่แพ็กเกจ",
+    "fullName": "ชื่อ-นามสกุล",
+    "email": "อีเมล",
+    "phone": "หมายเลขโทรศัพท์",
+    "additionalRequirements": "ความต้องการเพิ่มเติม",
+    "additionalRequirementsPlaceholder": "อธิบายความต้องการเพิ่มเติมสำหรับโปรเจกต์ของคุณ...",
+    "discount": "ส่วนลด (%)",
+    "generateButton": "สร้างใบเสนอราคา",
+    "generatingButton": "กำลังสร้าง...",
+    "cancelButton": "ยกเลิก",
+    "successTitle": "✓ สร้างใบเสนอราคาสำเร็จ",
+    "quoteNumber": "เลขที่ใบเสนอราคา",
+    "totalAmount": "จำนวนเงินรวม",
+    "client": "ผู้ขอใบเสนอราคา",
+    "downloadPDF": "📥 ดาวน์โหลด PDF",
+    "newQuote": "สร้างใบเสนอราคาใหม่",
+    "validityText": "ใบเสนอราคามีอายุ 30 วัน ส่วนยืนยันอีเมลได้ส่งถึง {email}",
+    "required": "* จำเป็นต้องกรอก",
+    "errorNameRequired": "กรุณากรอกชื่อ-นามสกุล",
+    "errorEmailRequired": "กรุณากรอกอีเมล",
+    "errorEmailInvalid": "รูปแบบอีเมลไม่ถูกต้อง",
+    "errorDiscountRange": "ส่วนลดต้องเป็น 0-100",
+    "loadingPackages": "กำลังโหลดแพ็กเกจ..."
+  },
   "footer": {
     "copyright": "© {year} KT Develop สงวนลิขสิทธิ์"
   }
 }
+

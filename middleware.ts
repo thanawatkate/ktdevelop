@@ -1,7 +1,6 @@
 import createMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from "next/server";
-
-const ADMIN_COOKIE_NAME = "admin_session";
+import { ADMIN_COOKIE_NAME, isSessionAuthorizedByValue } from "./src/core/security/adminAuth";
 
 const locales = ["th", "en"];
 const defaultLocale = "th";
@@ -13,11 +12,6 @@ const intlMiddleware = createMiddleware({
   localePrefix: "as-needed",
 });
 
-function getExpectedToken(): string | null {
-  const token = process.env.ADMIN_ACCESS_TOKEN?.trim();
-  return token || null;
-}
-
 function getProvidedToken(request: NextRequest): string | null {
   const bearerToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
   const headerToken = request.headers.get("x-admin-token")?.trim();
@@ -27,28 +21,27 @@ function getProvidedToken(request: NextRequest): string | null {
 }
 
 function isAdminAuthorized(request: NextRequest): boolean {
-  const expectedToken = getExpectedToken();
   const providedToken = getProvidedToken(request);
-
-  if (!expectedToken || !providedToken) {
-    return false;
-  }
-
-  return providedToken === expectedToken;
+  return isSessionAuthorizedByValue(providedToken);
 }
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // ปล่อย login routes โดยไม่ต้องตรวจสอบสิทธิ์
-  if (pathname === "/admin/login" || pathname.includes("/admin/login") || pathname === "/api/admin/login") {
+  if (pathname === "/admin/login" || pathname.includes("/admin/login") || pathname.startsWith("/api/admin/login")) {
     return intlMiddleware(request);
   }
 
-  // ตรวจสอบ admin routes
-  if (pathname.includes("/admin") || pathname.includes("/api/admin")) {
+  // หน้า /admin ให้เข้าได้เพื่อเปิด popup login ในหน้าเดิม
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    return intlMiddleware(request);
+  }
+
+  // ตรวจสอบ API admin routes และตอบแบบ API response แทน redirect
+  if (pathname.startsWith("/api/admin")) {
     if (!isAdminAuthorized(request)) {
-      return NextResponse.redirect(new URL("/admin/login", request.url));
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
   }
 
@@ -57,6 +50,9 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/admin",
+    "/admin/:path*",
+    "/api/admin/:path*",
     "/",
     "/(th|en)/:path*",
     "/((?!_next|_vercel|.*\\..*|api/contact|api/portfolios).*)",

@@ -1,44 +1,43 @@
 import { NextResponse } from "next/server";
-
-const ADMIN_COOKIE_NAME = "admin_session";
-const ADMIN_ACTOR_COOKIE_NAME = "admin_actor";
+import {
+  ADMIN_ACTOR_COOKIE_NAME,
+  ADMIN_COOKIE_NAME,
+  getAdminSessionSecret,
+  sanitizeActor,
+} from "../../../../core/security/adminAuth";
+import { validateDbAdminPasswordLogin } from "../../../../core/security/adminUserAuth";
 
 interface LoginPayload {
-  token?: unknown;
+  username?: unknown;
+  password?: unknown;
   actor?: unknown;
-}
-
-function sanitizeActor(value: unknown): string {
-  if (typeof value !== "string") {
-    return "admin";
-  }
-
-  const actor = value.trim().replace(/\s+/g, " ").slice(0, 80);
-  return actor || "admin";
 }
 
 export async function POST(request: Request) {
   try {
-    const expectedToken = process.env.ADMIN_ACCESS_TOKEN?.trim();
-    if (!expectedToken) {
+    const sessionSecret = getAdminSessionSecret();
+    if (!sessionSecret) {
       return NextResponse.json(
         {
           success: false,
-          error: "Admin token is not configured.",
+          error: "Admin session secret is not configured.",
         },
         { status: 500 }
       );
     }
 
     const payload = (await request.json()) as LoginPayload;
-    const providedToken = typeof payload.token === "string" ? payload.token.trim() : "";
-    const actor = sanitizeActor(payload.actor);
+    const username = typeof payload.username === "string" ? payload.username.trim() : "";
+    const password = typeof payload.password === "string" ? payload.password : "";
+    const actor = sanitizeActor(payload.actor || username);
 
-    if (!providedToken || providedToken !== expectedToken) {
+    const passwordOk = Boolean(username && password && (await validateDbAdminPasswordLogin(username, password)));
+
+    if (!passwordOk) {
       return NextResponse.json(
         {
           success: false,
-          error: "Invalid admin token.",
+          error: "Invalid username/password.",
         },
         { status: 401 }
       );
@@ -51,7 +50,7 @@ export async function POST(request: Request) {
 
     response.cookies.set({
       name: ADMIN_COOKIE_NAME,
-      value: expectedToken,
+      value: sessionSecret,
       httpOnly: true,
       sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
@@ -70,11 +69,11 @@ export async function POST(request: Request) {
     });
 
     return response;
-  } catch {
+  } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        error: "Invalid request payload.",
+        error: error instanceof Error ? error.message : "Invalid request payload.",
       },
       { status: 400 }
     );

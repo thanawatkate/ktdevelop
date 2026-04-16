@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
 import { ContentRepository } from "../../../infrastructure/repositories/ContentRepository";
+import { ADMIN_COOKIE_NAME, isSessionAuthorizedByValue } from "../../../core/security/adminAuth";
 
 const contentRepository = new ContentRepository();
-const ADMIN_COOKIE_NAME = "admin_session";
-
-function getExpectedToken(): string | null {
-  const token = process.env.ADMIN_ACCESS_TOKEN?.trim();
-  return token || null;
-}
 
 function readCookieValue(cookieHeader: string | null, cookieName: string): string | null {
   if (!cookieHeader) {
@@ -33,12 +28,8 @@ function getProvidedToken(request: Request): string | null {
 }
 
 function isAuthorized(request: Request): boolean {
-  const expectedToken = getExpectedToken();
   const providedToken = getProvidedToken(request);
-  if (!expectedToken || !providedToken) {
-    return false;
-  }
-  return expectedToken === providedToken;
+  return isSessionAuthorizedByValue(providedToken);
 }
 
 export async function GET(request: Request) {
