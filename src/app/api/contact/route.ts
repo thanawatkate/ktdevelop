@@ -52,6 +52,10 @@ export async function POST(request: Request) {
 
     const senderName = getStringField(formData, "sender_name") || getStringField(formData, "senderName");
     const email = getStringField(formData, "email");
+    const phone = getStringField(formData, "phone") || null;
+    const lineId = getStringField(formData, "line_id") || null;
+    const facebookUrl = getStringField(formData, "facebook_url") || null;
+    const instagramHandle = getStringField(formData, "instagram_handle") || null;
     const subject = getStringField(formData, "subject");
     const message = getStringField(formData, "message");
 
@@ -66,6 +70,10 @@ export async function POST(request: Request) {
     const created = await submitContactForm.execute({
       senderName,
       email,
+      phone,
+      lineId,
+      facebookUrl,
+      instagramHandle,
       subject,
       message,
       fileUrl,

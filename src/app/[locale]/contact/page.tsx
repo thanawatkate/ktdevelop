@@ -1,5 +1,4 @@
 import { ContactForm } from "../../../components/contact";
-import { QuoteGenerator } from "../../../components/forms";
 
 export const metadata = {
   title: "Contact",
@@ -57,19 +56,6 @@ export default function ContactPage() {
             />
           </div>
         </aside>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-600">Quick Quote</p>
-          <h2 className="mt-3 text-3xl font-semibold text-slate-900">Get an Instant Quote</h2>
-          <p className="mt-4 max-w-2xl text-lg text-slate-600">
-            Select a service package and receive an automated quotation in seconds. For custom requirements, our team will provide a tailored estimate.
-          </p>
-          <div className="mt-8">
-            <QuoteGenerator />
-          </div>
-        </div>
       </section>
     </main>
   );

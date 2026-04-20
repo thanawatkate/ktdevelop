@@ -1,5 +1,6 @@
 import { ContactForm } from "../../components/contact";
 import { AdminInlineContentEditor } from "../../components/admin/AdminInlineContentEditor";
+import { AdminInlinePortfolioEditor } from "../../components/admin/AdminInlinePortfolioEditor";
 import { PortfolioGrid } from "../../components/portfolio";
 import { GetAllPortfolios } from "../../core/use-cases/GetAllPortfolios";
 import { ContentRepository } from "../../infrastructure/repositories/ContentRepository";
@@ -134,17 +135,22 @@ export default async function HomePage({ params }: PageProps) {
       {/* ───── PORTFOLIO ───── */}
       <section id="portfolio" className="border-b border-slate-100 bg-slate-50 py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          {isAdmin ? (
-            <div className="mb-6 flex justify-end">
-              <AdminInlineContentEditor
-                locale={locale}
-                section="portfolio"
-                title="Portfolio"
-                initialEntries={content.portfolio || {}}
-              />
-            </div>
-          ) : null}
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="relative mx-auto max-w-2xl text-center">
+            {isAdmin ? (
+              <div className="absolute right-0 top-0 flex gap-2">
+                <AdminInlineContentEditor
+                  locale={locale}
+                  section="portfolio"
+                  title="Portfolio Text"
+                  initialEntries={{
+                    label: content.portfolio?.label ?? "",
+                    heading: content.portfolio?.heading ?? "",
+                    description: content.portfolio?.description ?? "",
+                  }}
+                />
+                <AdminInlinePortfolioEditor portfolios={portfolios} />
+              </div>
+            ) : null}
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-600">
               {content.portfolio?.label || "Case Studies"}
             </p>
@@ -165,17 +171,21 @@ export default async function HomePage({ params }: PageProps) {
       {/* ───── CONTACT ───── */}
       <section id="contact" className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          {isAdmin ? (
-            <div className="mb-6 flex justify-end">
-              <AdminInlineContentEditor
-                locale={locale}
-                section="contact"
-                title="Contact"
-                initialEntries={content.contact || {}}
-              />
-            </div>
-          ) : null}
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-2xl text-center relative">
+            {isAdmin ? (
+              <div className="absolute right-0 top-0">
+                <AdminInlineContentEditor
+                  locale={locale}
+                  section="contact"
+                  title="Header"
+                  initialEntries={{
+                    label: content.contact?.label ?? "",
+                    heading: content.contact?.heading ?? "",
+                    description: content.contact?.description ?? "",
+                  }}
+                />
+              </div>
+            ) : null}
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-600">
               {content.contact?.label || "Get In Touch"}
             </p>
@@ -192,7 +202,22 @@ export default async function HomePage({ params }: PageProps) {
             <ContactForm />
 
             <aside className="space-y-6">
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-8">
+              <div className="relative rounded-3xl border border-slate-200 bg-slate-50 p-8">
+                {isAdmin ? (
+                  <div className="absolute right-4 top-4">
+                    <AdminInlineContentEditor
+                      locale={locale}
+                      section="contact"
+                      title="Office"
+                      initialEntries={{
+                        officeCity: content.contact?.officeCity ?? "",
+                        officeHours: content.contact?.officeHours ?? "",
+                        officeEmail: content.contact?.officeEmail ?? "",
+                        officePhone: content.contact?.officePhone ?? "",
+                      }}
+                    />
+                  </div>
+                ) : null}
                 <p className="text-xs font-semibold uppercase tracking-[0.25em] text-indigo-600">
                   {tContact("officeLabel")}
                 </p>
@@ -205,7 +230,22 @@ export default async function HomePage({ params }: PageProps) {
                   <p>{content.contact?.officePhone || "+66 2 123 4567"}</p>
                 </div>
               </div>
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-8">
+              <div className="relative rounded-3xl border border-slate-200 bg-slate-50 p-8">
+                {isAdmin ? (
+                  <div className="absolute right-4 top-4">
+                    <AdminInlineContentEditor
+                      locale={locale}
+                      section="contact"
+                      title="Why Us"
+                      initialEntries={{
+                        why1: content.contact?.why1 ?? "",
+                        why2: content.contact?.why2 ?? "",
+                        why3: content.contact?.why3 ?? "",
+                        why4: content.contact?.why4 ?? "",
+                      }}
+                    />
+                  </div>
+                ) : null}
                 <p className="text-xs font-semibold uppercase tracking-[0.25em] text-indigo-600">
                   {tContact("whyLabel")}
                 </p>

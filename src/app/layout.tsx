@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
+import { Noto_Sans_Thai } from "next/font/google";
 import "./globals.css";
+
+const notoSansThai = Noto_Sans_Thai({
+  subsets: ["latin", "thai"],
+  display: "swap",
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
+});
 
 export const metadata: Metadata = {
   title: {
@@ -16,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html suppressHydrationWarning>
-      <body className="font-sans text-slate-900 antialiased" suppressHydrationWarning>
+      <body className={`${notoSansThai.variable} font-sans text-slate-900 antialiased`} suppressHydrationWarning>
         {children}
       </body>
     </html>

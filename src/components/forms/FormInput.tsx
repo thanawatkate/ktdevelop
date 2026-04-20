@@ -22,8 +22,8 @@ export function FormInput({
   errorClassName = "",
   ...inputProps
 }: FormInputProps) {
-  const baseInputClass = "mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600";
-  const errorInputClass = error ? "border-rose-500 focus:border-rose-600" : "";
+  const baseInputClass = "mt-2 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none transition focus:bg-white focus:border-indigo-600";
+  const errorInputClass = error ? "border-rose-500 focus:border-rose-600 bg-rose-50 focus:bg-rose-50" : "";
   const customInputClass = inputClassName || baseInputClass;
   const finalInputClass = `${customInputClass} ${errorInputClass}`.trim();
 

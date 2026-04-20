@@ -2,12 +2,16 @@
 
 import { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FormInput, FormSelect } from "../forms";
+import { FormInput, FormSelect, FormTextarea } from "../forms";
 
 interface ContactItem {
   id: number;
   sender_name: string;
   email: string;
+  phone: string | null;
+  line_id: string | null;
+  facebook_url: string | null;
+  instagram_handle: string | null;
   subject: string;
   message: string;
   file_url: string | null;
@@ -109,6 +113,7 @@ export function AdminContactManager() {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [selectedContact, setSelectedContact] = useState<ContactItem | null>(null);
+  const [isSavingContact, setIsSavingContact] = useState(false);
   const [isConfirmingBulkDelete, setIsConfirmingBulkDelete] = useState(false);
 
   useEffect(() => {
@@ -268,6 +273,69 @@ export function AdminContactManager() {
       await fetchKpi();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to update contact status.");
+    }
+  }
+
+  function updateSelectedContactField<K extends keyof ContactItem>(field: K, value: ContactItem[K]) {
+    setSelectedContact((prev) => {
+      if (!prev) {
+        return prev;
+      }
+
+      return {
+        ...prev,
+        [field]: value,
+      };
+    });
+  }
+
+  async function handleSaveSelectedContact() {
+    if (!selectedContact) {
+      return;
+    }
+
+    setError(null);
+    setMessage(null);
+    setIsSavingContact(true);
+
+    try {
+      const response = await fetch(`/api/admin/contacts/${selectedContact.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sender_name: selectedContact.sender_name,
+          email: selectedContact.email,
+          phone: selectedContact.phone,
+          line_id: selectedContact.line_id,
+          facebook_url: selectedContact.facebook_url,
+          instagram_handle: selectedContact.instagram_handle,
+          subject: selectedContact.subject,
+          message: selectedContact.message,
+          status: selectedContact.status,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.status === 401) {
+        router.replace("/admin/login");
+        return;
+      }
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Unable to update contact.");
+      }
+
+      setMessage("Contact updated.");
+      setSelectedContact(null);
+      await fetchContacts();
+      await fetchKpi();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to update contact.");
+    } finally {
+      setIsSavingContact(false);
     }
   }
 
@@ -759,21 +827,15 @@ export function AdminContactManager() {
 
       {selectedContact ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 p-4">
-          <div className="max-h-[85vh] w-full max-w-2xl overflow-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-panel">
-            <div className="flex items-start justify-between gap-4">
+          <div className="flex h-screen max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl border border-slate-200 bg-white shadow-panel md:p-0">
+            {/* Header */}
+            <div className="flex flex-shrink-0 items-start justify-between gap-4 border-b border-slate-200 p-6">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Submission Detail</p>
-                <h3 className="mt-1 text-lg font-semibold text-slate-900">{selectedContact.subject}</h3>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Edit Contact</p>
+                <h3 className="mt-1 text-lg font-semibold text-slate-900">#{selectedContact.id}</h3>
                 <p className="mt-1 text-sm text-slate-600">
-                  {selectedContact.sender_name} • {selectedContact.email}
+                  Submitted: {new Date(selectedContact.created_at).toLocaleString()}
                 </p>
-                <span className={`mt-2 inline-flex rounded-full border px-2 py-0.5 text-xs font-medium ${getStatusPillClass(selectedContact.status)}`}>
-                  {selectedContact.status === "in_progress"
-                    ? "In Progress"
-                    : selectedContact.status === "closed"
-                      ? "Closed"
-                      : "New"}
-                </span>
               </div>
               <button
                 type="button"
@@ -784,20 +846,123 @@ export function AdminContactManager() {
               </button>
             </div>
 
-            <div className="mt-5 whitespace-pre-wrap rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700">
-              {selectedContact.message}
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-auto p-6">
+              <div className="grid gap-4 md:grid-cols-2">
+              <FormInput
+                id="editSenderName"
+                label="Name"
+                value={selectedContact.sender_name}
+                onChange={(event) => updateSelectedContactField("sender_name", event.target.value)}
+                containerClassName="w-full"
+              />
+              <FormInput
+                id="editEmail"
+                type="email"
+                label="Email"
+                value={selectedContact.email}
+                onChange={(event) => updateSelectedContactField("email", event.target.value)}
+                containerClassName="w-full"
+              />
+              <FormInput
+                id="editPhone"
+                type="text"
+                label="Phone"
+                value={selectedContact.phone || ""}
+                onChange={(event) => updateSelectedContactField("phone", event.target.value || null)}
+                containerClassName="w-full"
+              />
+              <FormInput
+                id="editLineId"
+                type="text"
+                label="Line ID"
+                value={selectedContact.line_id || ""}
+                onChange={(event) => updateSelectedContactField("line_id", event.target.value || null)}
+                containerClassName="w-full"
+              />
+              <FormInput
+                id="editFacebookUrl"
+                type="text"
+                label="Facebook URL"
+                value={selectedContact.facebook_url || ""}
+                onChange={(event) => updateSelectedContactField("facebook_url", event.target.value || null)}
+                containerClassName="w-full"
+              />
+              <FormInput
+                id="editInstagramHandle"
+                type="text"
+                label="Instagram"
+                value={selectedContact.instagram_handle || ""}
+                onChange={(event) => updateSelectedContactField("instagram_handle", event.target.value || null)}
+                containerClassName="w-full"
+              />
+              <FormInput
+                id="editSubject"
+                type="text"
+                label="Subject"
+                value={selectedContact.subject}
+                onChange={(event) => updateSelectedContactField("subject", event.target.value)}
+                containerClassName="md:col-span-2 w-full"
+              />
+
+              <div className="md:col-span-2">
+                <label htmlFor="editStatus" className="block text-sm font-medium text-slate-900">
+                  Status
+                </label>
+                <select
+                  id="editStatus"
+                  value={selectedContact.status}
+                  onChange={(event) =>
+                    updateSelectedContactField("status", event.target.value as "new" | "in_progress" | "closed")
+                  }
+                  className="mt-2 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none transition focus:bg-white focus:border-indigo-600"
+                >
+                  <option value="new">New</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="closed">Closed</option>
+                </select>
+              </div>
+
+              <FormTextarea
+                id="editMessage"
+                label="Message"
+                rows={7}
+                value={selectedContact.message}
+                onChange={(event) => updateSelectedContactField("message", event.target.value)}
+                containerClassName="md:col-span-2 w-full"
+              />
+              </div>
+
+              {selectedContact.file_url ? (
+                <a
+                  href={selectedContact.file_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                >
+                  Open attached file
+                </a>
+              ) : null}
             </div>
 
-            {selectedContact.file_url ? (
-              <a
-                href={selectedContact.file_url}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-700"
+            {/* Footer */}
+            <div className="flex flex-shrink-0 justify-end gap-2 border-t border-slate-200 p-6">
+              <button
+                type="button"
+                onClick={() => setSelectedContact(null)}
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
               >
-                Open attached file
-              </a>
-            ) : null}
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleSaveSelectedContact()}
+                disabled={isSavingContact}
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isSavingContact ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
           </div>
         </div>
       ) : null}

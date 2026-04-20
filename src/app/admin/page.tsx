@@ -2,7 +2,6 @@ import { AdminPortfolioManager } from "../../components/admin/AdminPortfolioMana
 import { AdminContactManager } from "../../components/admin/AdminContactManager";
 import { AdminContactAuditLog } from "../../components/admin/AdminContactAuditLog";
 import { AdminContentManager } from "../../components/admin/AdminContentManager";
-import { AdminQuoteSyncManager } from "../../components/admin/AdminQuoteSyncManager";
 import { AdminAuthGate } from "../../components/admin/AdminAuthGate";
 import { cookies } from "next/headers";
 import { isSessionAuthorizedByValue } from "../../core/security/adminAuth";
@@ -23,7 +22,6 @@ export default async function AdminPage() {
         <AdminAuthGate initialAuthorized={initialAuthorized}>
           <AdminContentManager />
           <AdminPortfolioManager />
-          <AdminQuoteSyncManager />
           <AdminContactManager />
           <AdminContactAuditLog />
         </AdminAuthGate>

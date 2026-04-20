@@ -20,8 +20,8 @@ export function FormTextarea({
   errorClassName = "",
   ...textareaProps
 }: FormTextareaProps) {
-  const baseTextareaClass = "mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600";
-  const errorTextareaClass = error ? "border-rose-500 focus:border-rose-600" : "";
+  const baseTextareaClass = "mt-2 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none transition focus:bg-white focus:border-indigo-600";
+  const errorTextareaClass = error ? "border-rose-500 focus:border-rose-600 bg-rose-50 focus:bg-rose-50" : "";
   const customTextareaClass = textareaClassName || baseTextareaClass;
   const finalTextareaClass = `${customTextareaClass} ${errorTextareaClass}`.trim();
 

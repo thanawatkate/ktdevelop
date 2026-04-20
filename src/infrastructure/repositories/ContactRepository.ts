@@ -6,6 +6,10 @@ export interface Contact {
   id: number;
   sender_name: string;
   email: string;
+  phone: string | null;
+  line_id: string | null;
+  facebook_url: string | null;
+  instagram_handle: string | null;
   subject: string;
   message: string;
   file_url: string | null;
@@ -18,6 +22,10 @@ export type ContactStatus = "new" | "in_progress" | "closed";
 export interface CreateContactInput {
   sender_name: string;
   email: string;
+  phone?: string | null;
+  line_id?: string | null;
+  facebook_url?: string | null;
+  instagram_handle?: string | null;
   subject: string;
   message: string;
   file_url?: string | null;
@@ -27,6 +35,10 @@ export interface CreateContactInput {
 export interface UpdateContactInput {
   sender_name?: string;
   email?: string;
+  phone?: string | null;
+  line_id?: string | null;
+  facebook_url?: string | null;
+  instagram_handle?: string | null;
   subject?: string;
   message?: string;
   file_url?: string | null;
@@ -86,6 +98,10 @@ export class ContactRepository {
     return {
       sender_name: sanitizeTextInput(input.sender_name, 255),
       email: sanitizeEmail(input.email),
+      phone: input.phone ? sanitizeTextInput(input.phone, 20) : null,
+      line_id: input.line_id ? sanitizeTextInput(input.line_id, 255) : null,
+      facebook_url: input.facebook_url ? sanitizeOptionalUrl(input.facebook_url) : null,
+      instagram_handle: input.instagram_handle ? sanitizeTextInput(input.instagram_handle, 255) : null,
       subject: sanitizeTextInput(input.subject, 255),
       message: sanitizeMultilineInput(input.message, 5000),
       file_url: sanitizeOptionalUrl(input.file_url),
@@ -97,6 +113,10 @@ export class ContactRepository {
     return {
       sender_name: input.sender_name === undefined ? undefined : sanitizeTextInput(input.sender_name, 255),
       email: input.email === undefined ? undefined : sanitizeEmail(input.email),
+      phone: input.phone === undefined ? undefined : (input.phone ? sanitizeTextInput(input.phone, 20) : null),
+      line_id: input.line_id === undefined ? undefined : (input.line_id ? sanitizeTextInput(input.line_id, 255) : null),
+      facebook_url: input.facebook_url === undefined ? undefined : (input.facebook_url ? sanitizeOptionalUrl(input.facebook_url) : null),
+      instagram_handle: input.instagram_handle === undefined ? undefined : (input.instagram_handle ? sanitizeTextInput(input.instagram_handle, 255) : null),
       subject: input.subject === undefined ? undefined : sanitizeTextInput(input.subject, 255),
       message: input.message === undefined ? undefined : sanitizeMultilineInput(input.message, 5000),
       file_url: input.file_url === undefined ? undefined : sanitizeOptionalUrl(input.file_url),
@@ -142,7 +162,7 @@ export class ContactRepository {
 
   async getAll(): Promise<Contact[]> {
     const [rows] = await dbPool.query<(Contact & RowDataPacket)[]>(
-      "SELECT id, sender_name, email, subject, message, file_url, status, created_at FROM contacts ORDER BY created_at DESC"
+      "SELECT id, sender_name, email, phone, line_id, facebook_url, instagram_handle, subject, message, file_url, status, created_at FROM contacts ORDER BY created_at DESC"
     );
     return rows;
   }
@@ -151,7 +171,7 @@ export class ContactRepository {
     const limit = Math.max(1, Math.min(100, filters.limit ?? 20));
     const offset = Math.max(0, filters.offset ?? 0);
     const { whereSql, params } = this.buildFilterQuery(filters);
-    let sql = "SELECT id, sender_name, email, subject, message, file_url, status, created_at FROM contacts";
+    let sql = "SELECT id, sender_name, email, phone, line_id, facebook_url, instagram_handle, subject, message, file_url, status, created_at FROM contacts";
 
     sql += whereSql;
 
@@ -186,7 +206,7 @@ export class ContactRepository {
 
   async getById(id: number): Promise<Contact | null> {
     const [rows] = await dbPool.query<(Contact & RowDataPacket)[]>(
-      "SELECT id, sender_name, email, subject, message, file_url, status, created_at FROM contacts WHERE id = ? LIMIT 1",
+      "SELECT id, sender_name, email, phone, line_id, facebook_url, instagram_handle, subject, message, file_url, status, created_at FROM contacts WHERE id = ? LIMIT 1",
       [id]
     );
     return rows[0] || null;
@@ -196,10 +216,14 @@ export class ContactRepository {
     const sanitizedInput = this.sanitizeCreateInput(input);
 
     const [result] = await dbPool.execute<ResultSetHeader>(
-      "INSERT INTO contacts (sender_name, email, subject, message, file_url, status) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO contacts (sender_name, email, phone, line_id, facebook_url, instagram_handle, subject, message, file_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         sanitizedInput.sender_name,
         sanitizedInput.email,
+        sanitizedInput.phone,
+        sanitizedInput.line_id,
+        sanitizedInput.facebook_url,
+        sanitizedInput.instagram_handle,
         sanitizedInput.subject,
         sanitizedInput.message,
         sanitizedInput.file_url,
@@ -222,10 +246,14 @@ export class ContactRepository {
     }
 
     await dbPool.execute<ResultSetHeader>(
-      "UPDATE contacts SET sender_name = ?, email = ?, subject = ?, message = ?, file_url = ?, status = ? WHERE id = ?",
+      "UPDATE contacts SET sender_name = ?, email = ?, phone = ?, line_id = ?, facebook_url = ?, instagram_handle = ?, subject = ?, message = ?, file_url = ?, status = ? WHERE id = ?",
       [
         sanitizedInput.sender_name ?? current.sender_name,
         sanitizedInput.email ?? current.email,
+        sanitizedInput.phone ?? current.phone,
+        sanitizedInput.line_id ?? current.line_id,
+        sanitizedInput.facebook_url ?? current.facebook_url,
+        sanitizedInput.instagram_handle ?? current.instagram_handle,
         sanitizedInput.subject ?? current.subject,
         sanitizedInput.message ?? current.message,
         sanitizedInput.file_url ?? current.file_url,

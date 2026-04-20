@@ -7,6 +7,7 @@ import { FormInput, FormTextarea } from "../forms";
 interface FormErrors {
   senderName?: string;
   email?: string;
+  otherContact?: string;
   subject?: string;
   message?: string;
   file?: string;
@@ -23,10 +24,64 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const initialState = {
   senderName: "",
   email: "",
+  otherContact: "",
   subject: "",
   message: "",
   file: null as File | null,
 };
+
+function parseOtherContactChannels(raw: string): {
+  phone: string | null;
+  lineId: string | null;
+  facebookUrl: string | null;
+  instagramHandle: string | null;
+} {
+  const result = {
+    phone: null as string | null,
+    lineId: null as string | null,
+    facebookUrl: null as string | null,
+    instagramHandle: null as string | null,
+  };
+
+  const chunks = raw
+    .split(/[,\n]/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  for (const chunk of chunks) {
+    const lower = chunk.toLowerCase();
+
+    if (!result.lineId && /(line|ไลน์)/i.test(chunk)) {
+      result.lineId = chunk.replace(/^(line\s*id|line|ไลน์)\s*[:\-]?\s*/i, "").trim() || chunk;
+      continue;
+    }
+
+    if (!result.facebookUrl && /(facebook|fb\.com|fb)/i.test(lower)) {
+      result.facebookUrl = chunk.replace(/^(facebook|fb)\s*[:\-]?\s*/i, "").trim() || chunk;
+      continue;
+    }
+
+    if (!result.instagramHandle && /(instagram|ig|@)/i.test(chunk)) {
+      result.instagramHandle = chunk.replace(/^(instagram|ig)\s*[:\-]?\s*/i, "").trim() || chunk;
+      continue;
+    }
+
+    if (!result.phone && /(โทร|phone|tel|mobile|มือถือ)/i.test(chunk)) {
+      const normalized = chunk.replace(/^(โทรศัพท์|โทร|phone|tel|mobile|มือถือ)\s*[:\-]?\s*/i, "").trim();
+      result.phone = normalized || chunk;
+      continue;
+    }
+
+    if (!result.phone) {
+      const matchedPhone = chunk.match(/\+?\d[\d\s()\-]{7,}\d/);
+      if (matchedPhone) {
+        result.phone = matchedPhone[0].trim();
+      }
+    }
+  }
+
+  return result;
+}
 
 export function ContactForm() {
   const t = useTranslations("contactForm");
@@ -100,6 +155,12 @@ export function ContactForm() {
     payload.append("subject", formState.subject);
     payload.append("message", formState.message);
 
+    const parsedChannels = parseOtherContactChannels(formState.otherContact);
+    if (parsedChannels.phone) payload.append("phone", parsedChannels.phone);
+    if (parsedChannels.lineId) payload.append("line_id", parsedChannels.lineId);
+    if (parsedChannels.facebookUrl) payload.append("facebook_url", parsedChannels.facebookUrl);
+    if (parsedChannels.instagramHandle) payload.append("instagram_handle", parsedChannels.instagramHandle);
+
     if (formState.file) {
       payload.append("file", formState.file);
     }
@@ -157,6 +218,18 @@ export function ContactForm() {
           error={errors.email}
         />
       </div>
+
+      <FormInput
+        id="otherContact"
+        name="otherContact"
+        type="text"
+        label={t("otherContact")}
+        value={formState.otherContact}
+        onChange={handleChange}
+        placeholder={t("otherContactPlaceholder")}
+        inputClassName="mt-2 w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none ring-0 transition focus:border-indigo-600"
+        error={errors.otherContact}
+      />
 
       <FormInput
         id="subject"
