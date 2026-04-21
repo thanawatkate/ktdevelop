@@ -1,7 +1,10 @@
 import { ContactForm } from "../../components/contact";
 import { AdminInlineContentEditor } from "../../components/admin/AdminInlineContentEditor";
 import { AdminInlinePortfolioEditor } from "../../components/admin/AdminInlinePortfolioEditor";
+import { AdminInlineServicesEditor } from "../../components/admin/AdminInlineServicesEditor";
+import { AdminInlineWhyUsEditor } from "../../components/admin/AdminInlineWhyUsEditor";
 import { PortfolioGrid } from "../../components/portfolio";
+import { AdminPortfolioGrid } from "../../components/portfolio/AdminPortfolioGrid";
 import { GetAllPortfolios } from "../../core/use-cases/GetAllPortfolios";
 import { ContentRepository } from "../../infrastructure/repositories/ContentRepository";
 import { PortfolioRepository } from "../../infrastructure/repositories/PortfolioRepository";
@@ -91,17 +94,21 @@ export default async function HomePage({ params }: PageProps) {
       {/* ───── SERVICES ───── */}
       <section id="services" className="border-b border-slate-100 bg-white py-24">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          {isAdmin ? (
-            <div className="mb-6 flex justify-end">
-              <AdminInlineContentEditor
-                locale={locale}
-                section="services"
-                title="Services"
-                initialEntries={content.services || {}}
-              />
-            </div>
-          ) : null}
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="relative mx-auto max-w-2xl text-center">
+            {isAdmin ? (
+              <div className="absolute right-0 top-0">
+                <AdminInlineContentEditor
+                  locale={locale}
+                  section="services"
+                  title="Services Header"
+                  initialEntries={{
+                    label: content.services?.label ?? "",
+                    heading: content.services?.heading ?? "",
+                    description: content.services?.description ?? "",
+                  }}
+                />
+              </div>
+            ) : null}
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-600">
               {content.services?.label || "What We Do"}
             </p>
@@ -113,22 +120,26 @@ export default async function HomePage({ params }: PageProps) {
                 "From concept to production — we cover every layer of your digital product."}
             </p>
           </div>
-          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {serviceIcons.map(({ icon, key }) => (
-              <div
-                key={key}
-                className="group rounded-3xl border border-slate-100 bg-slate-50 p-7 transition hover:border-indigo-200 hover:bg-indigo-50"
-              >
-                <span className="text-3xl">{icon}</span>
-                <h3 className="mt-4 text-base font-semibold text-slate-900">
-                  {content.services?.[`${key}Title`] || "Service"}
-                </h3>
-                <p className="mt-2 text-sm leading-7 text-slate-600">
-                  {content.services?.[`${key}Desc`] || "Description"}
-                </p>
-              </div>
-            ))}
-          </div>
+          {isAdmin ? (
+            <AdminInlineServicesEditor locale={locale} initialEntries={content.services || {}} />
+          ) : (
+            <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {serviceIcons.map(({ icon: defaultIcon, key }) => (
+                <div
+                  key={key}
+                  className="group rounded-3xl border border-slate-100 bg-slate-50 p-7 transition hover:border-indigo-200 hover:bg-indigo-50"
+                >
+                  <span className="text-3xl">{content.services?.[`${key}Icon`] || defaultIcon}</span>
+                  <h3 className="mt-4 text-base font-semibold text-slate-900">
+                    {content.services?.[`${key}Title`] || "Service"}
+                  </h3>
+                  <p className="mt-2 text-sm leading-7 text-slate-600">
+                    {content.services?.[`${key}Desc`] || "Description"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -163,7 +174,11 @@ export default async function HomePage({ params }: PageProps) {
             </p>
           </div>
           <div className="mt-16">
-            <PortfolioGrid portfolios={portfolios} />
+            {isAdmin ? (
+              <AdminPortfolioGrid portfolios={portfolios} />
+            ) : (
+              <PortfolioGrid portfolios={portfolios} />
+            )}
           </div>
         </div>
       </section>
@@ -233,16 +248,11 @@ export default async function HomePage({ params }: PageProps) {
               <div className="relative rounded-3xl border border-slate-200 bg-slate-50 p-8">
                 {isAdmin ? (
                   <div className="absolute right-4 top-4">
-                    <AdminInlineContentEditor
+                    <AdminInlineWhyUsEditor
                       locale={locale}
-                      section="contact"
-                      title="Why Us"
-                      initialEntries={{
-                        why1: content.contact?.why1 ?? "",
-                        why2: content.contact?.why2 ?? "",
-                        why3: content.contact?.why3 ?? "",
-                        why4: content.contact?.why4 ?? "",
-                      }}
+                      initialEntries={Object.fromEntries(
+                        Object.entries(content.contact || {}).filter(([k]) => /^why\d+$/.test(k))
+                      )}
                     />
                   </div>
                 ) : null}
@@ -250,22 +260,15 @@ export default async function HomePage({ params }: PageProps) {
                   {tContact("whyLabel")}
                 </p>
                 <ul className="mt-4 space-y-3 text-sm leading-7 text-slate-600">
-                  <li className="flex items-start gap-2">
-                    <span className="mt-0.5 text-indigo-500">✓</span>
-                    {content.contact?.why1 || "Website and portal modernization"}
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-0.5 text-indigo-500">✓</span>
-                    {content.contact?.why2 || "Internal workflow and CRM systems"}
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-0.5 text-indigo-500">✓</span>
-                    {content.contact?.why3 || "ERP, finance, and logistics integration"}
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-0.5 text-indigo-500">✓</span>
-                    {content.contact?.why4 || "Clean Architecture for long-term growth"}
-                  </li>
+                  {Object.keys(content.contact || {})
+                    .filter((k) => /^why\d+$/.test(k))
+                    .sort((a, b) => parseInt(a.replace("why", ""), 10) - parseInt(b.replace("why", ""), 10))
+                    .map((k) => (
+                      <li key={k} className="flex items-start gap-2">
+                        <span className="mt-0.5 text-indigo-500">✓</span>
+                        {content.contact?.[k]}
+                      </li>
+                    ))}
                 </ul>
               </div>
             </aside>

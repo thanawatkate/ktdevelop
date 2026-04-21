@@ -1,7 +1,23 @@
 import { NextResponse } from "next/server";
 import { PortfolioRepository } from "../../../../../infrastructure/repositories/PortfolioRepository";
+import { ADMIN_COOKIE_NAME, isSessionAuthorizedByValue } from "../../../../../core/security/adminAuth";
 
 const portfolioRepository = new PortfolioRepository();
+
+function readCookieValue(cookieHeader: string | null, cookieName: string): string | null {
+  if (!cookieHeader) return null;
+  for (const part of cookieHeader.split(";")) {
+    const p = part.trim();
+    if (p.startsWith(`${cookieName}=`)) return decodeURIComponent(p.slice(cookieName.length + 1)).trim();
+  }
+  return null;
+}
+
+function isAuthorized(request: Request): boolean {
+  const cookie = readCookieValue(request.headers.get("cookie"), ADMIN_COOKIE_NAME);
+  const bearer = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim() || null;
+  return isSessionAuthorizedByValue(bearer || cookie);
+}
 
 interface UpdatePortfolioPayload {
   title?: unknown;
@@ -21,6 +37,10 @@ function parseId(value: string): number | null {
 
 export async function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
+    if (!isAuthorized(request)) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id: idParam } = await context.params;
     const id = parseId(idParam);
 
@@ -48,8 +68,12 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
   }
 }
 
-export async function DELETE(_request: Request, context: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
   try {
+    if (!isAuthorized(request)) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
     const { id: idParam } = await context.params;
     const id = parseId(idParam);
 

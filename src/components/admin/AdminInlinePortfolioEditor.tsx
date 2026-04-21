@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FormInput, FormTextarea, FormCheckbox } from "../forms";
 
@@ -35,12 +35,15 @@ interface Props {
 
 export function AdminInlinePortfolioEditor({ portfolios: initialPortfolios }: Props) {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [portfolios, setPortfolios] = useState<PortfolioItem[]>(initialPortfolios);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -51,6 +54,27 @@ export function AdminInlinePortfolioEditor({ portfolios: initialPortfolios }: Pr
       if (data.success) setPortfolios(data.data as PortfolioItem[]);
     } catch {
       // ignore
+    }
+  }
+
+  async function handleFileUpload(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const result = await res.json();
+      if (!res.ok || !result.success) throw new Error(result.error || "Upload failed.");
+      setForm((p) => ({ ...p, image_url: result.url as string }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   }
 
@@ -190,13 +214,61 @@ export function AdminInlinePortfolioEditor({ portfolios: initialPortfolios }: Pr
                     value={form.client_name}
                     onChange={(e) => setForm((p) => ({ ...p, client_name: e.target.value }))}
                   />
-                  <FormInput
-                    id="p-image"
-                    label="Image URL"
-                    placeholder="https://..."
-                    value={form.image_url}
-                    onChange={(e) => setForm((p) => ({ ...p, image_url: e.target.value }))}
-                  />
+
+                  {/* Image upload */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-900">Image</label>
+                    {/* Preview */}
+                    {form.image_url ? (
+                      <div className="relative mt-2">
+                        <img
+                          src={form.image_url}
+                          alt="preview"
+                          className="h-36 w-full rounded-xl object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setForm((p) => ({ ...p, image_url: "" }))}
+                          className="absolute right-2 top-2 rounded-full bg-slate-900/60 px-2 py-0.5 text-xs font-semibold text-white hover:bg-slate-900/80"
+                        >
+                          ✕ Remove
+                        </button>
+                      </div>
+                    ) : null}
+                    {/* Upload button */}
+                    <div className="mt-2 flex items-center gap-2">
+                      <label
+                        htmlFor="p-file-upload"
+                        className={`cursor-pointer rounded-xl border border-slate-300 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 ${
+                          isUploading ? "cursor-not-allowed opacity-60" : ""
+                        }`}
+                      >
+                        {isUploading ? "Uploading..." : "📁 Choose File"}
+                      </label>
+                      <input
+                        ref={fileInputRef}
+                        id="p-file-upload"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        className="hidden"
+                        disabled={isUploading}
+                        onChange={handleFileUpload}
+                      />
+                      <span className="text-xs text-slate-500">JPG, PNG, WebP, GIF · Max 5MB</span>
+                    </div>
+                    {/* Or URL fallback */}
+                    <div className="mt-3">
+                      <FormInput
+                        id="p-image"
+                        label="หรือวาง URL"
+                        placeholder="https://..."
+                        value={form.image_url}
+                        onChange={(e) => setForm((p) => ({ ...p, image_url: e.target.value }))}
+                        labelClassName="block text-xs font-medium text-slate-500"
+                      />
+                    </div>
+                  </div>
+
                   <FormTextarea
                     id="p-desc"
                     label="Description"

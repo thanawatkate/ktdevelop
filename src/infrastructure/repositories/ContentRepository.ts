@@ -112,4 +112,18 @@ export class ContentRepository {
       connection.release();
     }
   }
+
+  async deleteKeys(locale: string, section: string, keys: string[]): Promise<boolean> {
+    if (keys.length === 0) return true;
+    try {
+      await dbPool.query(
+        `DELETE FROM localized_content WHERE locale = ? AND section = ? AND key_name IN (${keys.map(() => "?").join(",")})`,
+        [locale, section, ...keys]
+      );
+      return true;
+    } catch (error) {
+      console.error("Error deleting content keys:", error);
+      return false;
+    }
+  }
 }
