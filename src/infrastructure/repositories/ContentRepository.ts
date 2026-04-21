@@ -14,7 +14,7 @@ export class ContentRepository {
   async getBySection(locale: string, section: string): Promise<Record<string, string>> {
     try {
       const [rows] = await dbPool.query(
-        'SELECT key_name, content FROM localized_content WHERE locale = ? AND section = ?',
+        'SELECT key_name, content FROM localized_content WHERE locale = ? AND section = ? AND deleted_at IS NULL',
         [locale, section]
       );
 
@@ -33,7 +33,7 @@ export class ContentRepository {
   async getByKey(locale: string, section: string, key: string): Promise<string | null> {
     try {
       const [rows] = await dbPool.query(
-        'SELECT content FROM localized_content WHERE locale = ? AND section = ? AND key_name = ?',
+        'SELECT content FROM localized_content WHERE locale = ? AND section = ? AND key_name = ? AND deleted_at IS NULL',
         [locale, section, key]
       );
 
@@ -50,7 +50,7 @@ export class ContentRepository {
       await dbPool.query(
         `INSERT INTO localized_content (locale, section, key_name, content)
          VALUES (?, ?, ?, ?)
-         ON DUPLICATE KEY UPDATE content = VALUES(content), updatedAt = CURRENT_TIMESTAMP`,
+         ON DUPLICATE KEY UPDATE content = VALUES(content), deleted_at = NULL, updatedAt = CURRENT_TIMESTAMP`,
         [locale, section, key, content]
       );
       return true;
@@ -63,7 +63,7 @@ export class ContentRepository {
   async getAllSections(locale: string): Promise<Record<string, Record<string, string>>> {
     try {
       const [rows] = await dbPool.query(
-        'SELECT section, key_name, content FROM localized_content WHERE locale = ? ORDER BY section, key_name',
+        'SELECT section, key_name, content FROM localized_content WHERE locale = ? AND deleted_at IS NULL ORDER BY section, key_name',
         [locale]
       );
 
@@ -97,7 +97,7 @@ export class ContentRepository {
         await connection.query(
           `INSERT INTO localized_content (locale, section, key_name, content)
            VALUES (?, ?, ?, ?)
-           ON DUPLICATE KEY UPDATE content = VALUES(content), updatedAt = CURRENT_TIMESTAMP`,
+           ON DUPLICATE KEY UPDATE content = VALUES(content), deleted_at = NULL, updatedAt = CURRENT_TIMESTAMP`,
           [locale, section, key, value]
         );
       }
@@ -117,7 +117,7 @@ export class ContentRepository {
     if (keys.length === 0) return true;
     try {
       await dbPool.query(
-        `DELETE FROM localized_content WHERE locale = ? AND section = ? AND key_name IN (${keys.map(() => "?").join(",")})`,
+        `UPDATE localized_content SET deleted_at = NOW() WHERE locale = ? AND section = ? AND key_name IN (${keys.map(() => "?").join(",")}) AND deleted_at IS NULL`,
         [locale, section, ...keys]
       );
       return true;

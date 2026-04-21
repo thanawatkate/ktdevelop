@@ -51,21 +51,21 @@ export class PortfolioRepository {
 
   async getAll(): Promise<Portfolio[]> {
     const [rows] = await dbPool.query<(Portfolio & RowDataPacket)[]>(
-      "SELECT id, title, description, client_name, image_url, is_published, created_at FROM portfolios ORDER BY created_at DESC"
+      "SELECT id, title, description, client_name, image_url, is_published, created_at FROM portfolios WHERE deleted_at IS NULL ORDER BY created_at DESC"
     );
     return rows;
   }
 
   async getAllPublished(): Promise<Portfolio[]> {
     const [rows] = await dbPool.query<(Portfolio & RowDataPacket)[]>(
-      "SELECT id, title, description, client_name, image_url, is_published, created_at FROM portfolios WHERE is_published = 1 ORDER BY created_at DESC"
+      "SELECT id, title, description, client_name, image_url, is_published, created_at FROM portfolios WHERE is_published = 1 AND deleted_at IS NULL ORDER BY created_at DESC"
     );
     return rows;
   }
 
   async getById(id: number): Promise<Portfolio | null> {
     const [rows] = await dbPool.query<(Portfolio & RowDataPacket)[]>(
-      "SELECT id, title, description, client_name, image_url, is_published, created_at FROM portfolios WHERE id = ? LIMIT 1",
+      "SELECT id, title, description, client_name, image_url, is_published, created_at FROM portfolios WHERE id = ? AND deleted_at IS NULL LIMIT 1",
       [id]
     );
     return rows[0] || null;
@@ -116,7 +116,7 @@ export class PortfolioRepository {
 
   async delete(id: number): Promise<boolean> {
     const [result] = await dbPool.execute<ResultSetHeader>(
-      "DELETE FROM portfolios WHERE id = ?",
+      "UPDATE portfolios SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL",
       [id]
     );
     return result.affectedRows > 0;

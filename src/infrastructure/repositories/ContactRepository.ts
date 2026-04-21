@@ -131,7 +131,7 @@ export class ContactRepository {
     const status = this.sanitizeStatus(filters.status);
 
     const params: Array<string | number> = [];
-    const whereClauses: string[] = [];
+    const whereClauses: string[] = ["deleted_at IS NULL"];
 
     if (search) {
       const likeQuery = `%${search}%`;
@@ -162,7 +162,7 @@ export class ContactRepository {
 
   async getAll(): Promise<Contact[]> {
     const [rows] = await dbPool.query<(Contact & RowDataPacket)[]>(
-      "SELECT id, sender_name, email, phone, line_id, facebook_url, instagram_handle, subject, message, file_url, status, created_at FROM contacts ORDER BY created_at DESC"
+      "SELECT id, sender_name, email, phone, line_id, facebook_url, instagram_handle, subject, message, file_url, status, created_at FROM contacts WHERE deleted_at IS NULL ORDER BY created_at DESC"
     );
     return rows;
   }
@@ -197,7 +197,7 @@ export class ContactRepository {
 
     const placeholders = validIds.map(() => "?").join(",");
     const [result] = await dbPool.execute<ResultSetHeader>(
-      `DELETE FROM contacts WHERE id IN (${placeholders})`,
+      `UPDATE contacts SET deleted_at = NOW() WHERE id IN (${placeholders}) AND deleted_at IS NULL`,
       validIds
     );
 
@@ -206,7 +206,7 @@ export class ContactRepository {
 
   async getById(id: number): Promise<Contact | null> {
     const [rows] = await dbPool.query<(Contact & RowDataPacket)[]>(
-      "SELECT id, sender_name, email, phone, line_id, facebook_url, instagram_handle, subject, message, file_url, status, created_at FROM contacts WHERE id = ? LIMIT 1",
+      "SELECT id, sender_name, email, phone, line_id, facebook_url, instagram_handle, subject, message, file_url, status, created_at FROM contacts WHERE id = ? AND deleted_at IS NULL LIMIT 1",
       [id]
     );
     return rows[0] || null;
@@ -267,7 +267,7 @@ export class ContactRepository {
 
   async delete(id: number): Promise<boolean> {
     const [result] = await dbPool.execute<ResultSetHeader>(
-      "DELETE FROM contacts WHERE id = ?",
+      "UPDATE contacts SET deleted_at = NOW() WHERE id = ? AND deleted_at IS NULL",
       [id]
     );
     return result.affectedRows > 0;
