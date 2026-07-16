@@ -6,6 +6,7 @@ import {
   sanitizeActor,
 } from "../../../../core/security/adminAuth";
 import { validateDbAdminPasswordLogin } from "../../../../core/security/adminUserAuth";
+import { checkRateLimit, getClientIp, RATE_LIMITS } from "../../../../lib/rateLimit";
 
 interface LoginPayload {
   username?: unknown;
@@ -15,6 +16,14 @@ interface LoginPayload {
 
 export async function POST(request: Request) {
   try {
+    const clientIp = getClientIp(request);
+    if (!checkRateLimit(`login:${clientIp}`, RATE_LIMITS.adminLogin)) {
+      return NextResponse.json(
+        { success: false, error: "Too many login attempts. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const sessionSecret = getAdminSessionSecret();
     if (!sessionSecret) {
       return NextResponse.json(

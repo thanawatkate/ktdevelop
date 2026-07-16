@@ -1,6 +1,8 @@
-import { createHash } from "crypto";
+import bcrypt from "bcryptjs";
 import { RowDataPacket } from "mysql2";
 import { dbPool } from "../../infrastructure/db";
+
+const BCRYPT_ROUNDS = 12;
 
 interface AdminUserRow extends RowDataPacket {
   id: number;
@@ -10,8 +12,12 @@ interface AdminUserRow extends RowDataPacket {
   is_active: number;
 }
 
-function sha256(input: string): string {
-  return createHash("sha256").update(input).digest("hex");
+/**
+ * Hashes a plaintext password using bcrypt.
+ * Used by seed scripts and password-reset flows.
+ */
+export async function hashPassword(plaintext: string): Promise<string> {
+  return bcrypt.hash(plaintext, BCRYPT_ROUNDS);
 }
 
 export async function validateDbAdminPasswordLogin(usernameOrEmail: string, password: string): Promise<boolean> {
@@ -29,11 +35,12 @@ export async function validateDbAdminPasswordLogin(usernameOrEmail: string, pass
   );
 
   if (!rows.length) {
+    // Run a dummy bcrypt compare to prevent user-enumeration via timing
+    await bcrypt.compare(password, "$2b$12$invalidhashpaddingtopreventienumeation00000000000000000");
     return false;
   }
 
-  const hashedPassword = sha256(password);
-  return rows[0].password_hash === hashedPassword;
+  return bcrypt.compare(password, rows[0].password_hash);
 }
 
 export async function isDbAdminEmailAllowed(email: string): Promise<boolean> {

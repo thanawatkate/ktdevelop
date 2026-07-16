@@ -4,6 +4,7 @@ import path from "path";
 import { NextResponse } from "next/server";
 import { ContactRepository } from "../../../infrastructure/repositories/ContactRepository";
 import { SubmitContactForm } from "../../../core/use-cases/SubmitContactForm";
+import { checkRateLimit, getClientIp, RATE_LIMITS } from "../../../lib/rateLimit";
 
 export const runtime = "nodejs";
 
@@ -48,6 +49,14 @@ function validateUploadedFile(file: File): void {
 
 export async function POST(request: Request) {
   try {
+    const clientIp = getClientIp(request);
+    if (!checkRateLimit(`contact:${clientIp}`, RATE_LIMITS.contactForm)) {
+      return NextResponse.json(
+        { success: false, error: "Too many requests. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const formData = await request.formData();
 
     const senderName = getStringField(formData, "sender_name") || getStringField(formData, "senderName");

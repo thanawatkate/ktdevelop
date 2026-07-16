@@ -13,10 +13,11 @@ const {
   ADMIN_SEED_USERNAME,
   ADMIN_SEED_EMAIL,
   ADMIN_SEED_PASSWORD,
-} = process.env;
+const bcrypt = require("bcryptjs");
 
-function sha256(input) {
-  return crypto.createHash("sha256").update(input).digest("hex");
+function hashPasswordSync(input) {
+  // Sync hashing is acceptable here since it's a seed script run from CLI
+  return bcrypt.hashSync(input, 12);
 }
 
 async function run() {
@@ -31,7 +32,7 @@ async function run() {
   const username = (ADMIN_SEED_USERNAME || "admin").trim();
   const email = (ADMIN_SEED_EMAIL || "admin@ktdevelop.local").trim();
   const password = ADMIN_SEED_PASSWORD || "Admin123!";
-  const passwordHash = sha256(password);
+  const passwordHash = hashPasswordSync(password);
 
   await conn.query(`
     CREATE TABLE IF NOT EXISTS user_groups (
