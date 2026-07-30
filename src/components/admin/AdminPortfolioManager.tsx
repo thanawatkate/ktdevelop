@@ -37,7 +37,6 @@ export function AdminPortfolioManager() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -166,43 +165,10 @@ export function AdminPortfolioManager() {
     }
   }
 
-  async function handleLogout() {
-    setIsLoggingOut(true);
-    setError(null);
-    setMessage(null);
-
-    try {
-      await fetch("/api/admin/logout", { method: "POST" });
-      router.replace("/admin/login");
-      router.refresh();
-    } catch {
-      setError("Unable to logout.");
-    } finally {
-      setIsLoggingOut(false);
-    }
-  }
-
   return (
-    <section className="space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-600">Admin</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900">Portfolio Management</h1>
-          <p className="mt-2 text-sm text-slate-600">Create, update, publish, and remove portfolio records.</p>
-        </div>
-        <button
-          type="button"
-          onClick={handleLogout}
-          disabled={isLoggingOut}
-          className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isLoggingOut ? "Signing out..." : "Logout"}
-        </button>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <form onSubmit={handleSubmit} className="space-y-5 rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900">{editingId ? "Edit Portfolio" : "Add Portfolio"}</h2>
+    <section className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+        <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-slate-900">{editingId ? "Edit Portfolio" : "Add Portfolio"}</h2>
 
           <FormInput
             id="title"
@@ -267,36 +233,36 @@ export function AdminPortfolioManager() {
           </div>
         </form>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-900">Existing Portfolios</h2>
-          {isLoading ? <p className="mt-4 text-sm text-slate-500">Loading portfolios...</p> : null}
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-slate-900">Existing Portfolios</h2>
+          {isLoading ? <p className="mt-3 text-sm text-slate-500">Loading portfolios...</p> : null}
 
           {!isLoading && items.length === 0 ? (
-            <p className="mt-4 text-sm text-slate-500">No portfolio records found.</p>
+            <p className="mt-3 text-sm text-slate-500">No portfolio records found.</p>
           ) : null}
 
-          <div className="mt-4 space-y-3">
+          <div className="mt-3 space-y-2">
             {items.map((item) => (
-              <article key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <article key={item.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">{item.client_name}</p>
-                    <h3 className="mt-1 text-base font-semibold text-slate-900">{item.title}</h3>
-                    <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">{item.description}</p>
-                    <p className="mt-2 text-xs text-slate-500">{item.is_published === 1 ? "Published" : "Draft"}</p>
+                  <div className="min-w-0">
+                    <p className="text-xs font-medium text-indigo-600">{item.client_name}</p>
+                    <h3 className="mt-0.5 text-sm font-semibold text-slate-900">{item.title}</h3>
+                    <p className="mt-1.5 line-clamp-2 text-sm leading-5 text-slate-600">{item.description}</p>
+                    <p className="mt-1.5 text-xs text-slate-500">{item.is_published === 1 ? "Published" : "Draft"}</p>
                   </div>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex shrink-0 flex-col gap-1.5">
                     <button
                       type="button"
                       onClick={() => beginEdit(item)}
-                      className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
+                      className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
                     >
                       Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(item.id)}
-                      className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-700 transition hover:bg-rose-100"
+                      className="rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 transition hover:bg-rose-100"
                     >
                       Delete
                     </button>
@@ -306,7 +272,6 @@ export function AdminPortfolioManager() {
             ))}
           </div>
         </div>
-      </div>
     </section>
   );
 }

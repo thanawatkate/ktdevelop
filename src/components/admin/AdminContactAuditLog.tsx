@@ -75,12 +75,8 @@ export function AdminContactAuditLog() {
   }
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-600">Audit</p>
-          <h2 className="mt-1 text-xl font-semibold text-slate-900">Lead Status Change History</h2>
-        </div>
+    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-wrap items-center justify-end gap-3">
         <a
           href={`/api/admin/contacts/audits/export?contactId=${encodeURIComponent(contactIdFilter)}`}
           className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
@@ -90,7 +86,7 @@ export function AdminContactAuditLog() {
       </div>
 
       <form
-        className="mt-5 flex flex-wrap gap-3"
+        className="mt-4 flex flex-wrap gap-3"
         onSubmit={(event) => {
           event.preventDefault();
           setPage(1);

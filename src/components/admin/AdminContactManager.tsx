@@ -445,12 +445,8 @@ export function AdminContactManager() {
   }
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-600">Inbound Leads</p>
-          <h2 className="mt-1 text-xl font-semibold text-slate-900">Contact Submissions</h2>
-        </div>
+    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="flex flex-wrap items-center justify-end gap-3">
         <a
           href={`/api/admin/contacts/export?q=${encodeURIComponent(query)}&from=${encodeURIComponent(fromDate)}&to=${encodeURIComponent(toDate)}&status=${encodeURIComponent(statusFilter)}`}
           className="rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
@@ -459,12 +455,12 @@ export function AdminContactManager() {
         </a>
       </div>
 
-      <form className="mt-5 flex flex-wrap gap-3" onSubmit={handleSearch}>
+      <form className="mt-4 flex flex-wrap gap-2.5" onSubmit={handleSearch}>
         <FormInput
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search by sender, email, subject, message"
-          containerClassName="min-w-[280px] flex-1"
+          containerClassName="min-w-[240px] flex-1"
           inputClassName="rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-indigo-600"
         />
         <button
@@ -515,38 +511,41 @@ export function AdminContactManager() {
         />
       </form>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Total Leads</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">{kpi.total}</p>
+      <div className="mt-4 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3">
+          <p className="text-[11px] uppercase tracking-[0.16em] text-slate-500">Total</p>
+          <p className="mt-1 text-xl font-semibold text-slate-900">{kpi.total}</p>
         </div>
-        <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-indigo-600">New</p>
-          <p className="mt-2 text-2xl font-semibold text-indigo-700">{kpi.newCount}</p>
+        <div className="rounded-xl border border-indigo-200 bg-indigo-50 px-3.5 py-3">
+          <p className="text-[11px] uppercase tracking-[0.16em] text-indigo-600">New</p>
+          <p className="mt-1 text-xl font-semibold text-indigo-700">{kpi.newCount}</p>
         </div>
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-amber-600">In Progress</p>
-          <p className="mt-2 text-2xl font-semibold text-amber-700">{kpi.inProgressCount}</p>
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3">
+          <p className="text-[11px] uppercase tracking-[0.16em] text-amber-600">In Progress</p>
+          <p className="mt-1 text-xl font-semibold text-amber-700">{kpi.inProgressCount}</p>
         </div>
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-emerald-600">Closed</p>
-          <p className="mt-2 text-2xl font-semibold text-emerald-700">{kpi.closedCount}</p>
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-3">
+          <p className="text-[11px] uppercase tracking-[0.16em] text-emerald-600">Closed</p>
+          <p className="mt-1 text-xl font-semibold text-emerald-700">{kpi.closedCount}</p>
         </div>
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-rose-600">Overdue New</p>
-          <p className="mt-2 text-2xl font-semibold text-rose-700">{kpi.overdueNewCount}</p>
-          <p className="mt-1 text-xs text-rose-700/80">SLA at least {SLA_DAYS} day(s)</p>
+        <div className="rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-3">
+          <p className="text-[11px] uppercase tracking-[0.16em] text-rose-600">Overdue New</p>
+          <p className="mt-1 text-xl font-semibold text-rose-700">{kpi.overdueNewCount}</p>
+          <p className="mt-0.5 text-[11px] text-rose-700/80">SLA ≥ {SLA_DAYS}d</p>
         </div>
       </div>
 
-      <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50/60 p-3.5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Lead Trend</p>
-            <p className="mt-1 text-sm font-medium text-slate-800">Daily created leads over selected period</p>
+            <p className="text-sm font-medium text-slate-800">Lead trend</p>
             {trendComparison ? (
-              <p className="mt-1 text-xs text-slate-600">
-                Current: <span className="font-semibold text-slate-800">{trendComparison.currentTotal}</span> | Previous: <span className="font-semibold text-slate-800">{trendComparison.previousTotal}</span> | Change:{" "}
+              <p className="mt-0.5 text-xs text-slate-600">
+                Current: <span className="font-semibold text-slate-800">{trendComparison.currentTotal}</span>
+                {" · "}
+                Previous: <span className="font-semibold text-slate-800">{trendComparison.previousTotal}</span>
+                {" · "}
+                Change:{" "}
                 <span
                   className={
                     trendComparison.changePercent === null
@@ -564,64 +563,64 @@ export function AdminContactManager() {
           <div className="flex flex-wrap items-center gap-2">
             <a
               href={`/api/admin/contacts/trend/export?days=${trendWindow}&window=current`}
-              className="rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 transition hover:bg-indigo-100"
+              className="rounded-lg border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700 transition hover:bg-indigo-100"
             >
-              Export Current CSV
+              Export current
             </a>
             <a
               href={`/api/admin/contacts/trend/export?days=${trendWindow}&window=previous`}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
+              className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-50"
             >
-              Export Previous CSV
+              Export previous
             </a>
-            <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1 text-xs font-medium">
+            <div className="inline-flex rounded-lg border border-slate-200 bg-white p-0.5 text-xs font-medium">
               <button
                 type="button"
                 onClick={() => setTrendWindow(7)}
-                className={`rounded-lg px-3 py-1.5 transition ${
-                  trendWindow === 7 ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-800"
+                className={`rounded-md px-2.5 py-1 transition ${
+                  trendWindow === 7 ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-800"
                 }`}
               >
-                7 days
+                7d
               </button>
               <button
                 type="button"
                 onClick={() => setTrendWindow(30)}
-                className={`rounded-lg px-3 py-1.5 transition ${
-                  trendWindow === 30 ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-800"
+                className={`rounded-md px-2.5 py-1 transition ${
+                  trendWindow === 30 ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-800"
                 }`}
               >
-                30 days
+                30d
               </button>
             </div>
-            <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1 text-xs font-medium">
+            <div className="inline-flex rounded-lg border border-slate-200 bg-white p-0.5 text-xs font-medium">
               <button
                 type="button"
                 onClick={() => setChangeDisplayMode("percent")}
-                className={`rounded-lg px-3 py-1.5 transition ${
+                className={`rounded-md px-2.5 py-1 transition ${
                   changeDisplayMode === "percent"
-                    ? "bg-white text-slate-900 shadow-sm"
+                    ? "bg-slate-900 text-white"
                     : "text-slate-600 hover:text-slate-800"
                 }`}
               >
-                % Change
+                %
               </button>
               <button
                 type="button"
                 onClick={() => setChangeDisplayMode("absolute")}
-                className={`rounded-lg px-3 py-1.5 transition ${
+                className={`rounded-md px-2.5 py-1 transition ${
                   changeDisplayMode === "absolute"
-                    ? "bg-white text-slate-900 shadow-sm"
+                    ? "bg-slate-900 text-white"
                     : "text-slate-600 hover:text-slate-800"
                 }`}
               >
-                Absolute
+                Abs
               </button>
             </div>
           </div>
         </div>
 
-        <div className="mt-4">
+        <div className="mt-3">
           {trend.length === 0 ? (
             <p className="text-sm text-slate-500">No trend data available.</p>
           ) : (
@@ -630,16 +629,15 @@ export function AdminContactManager() {
               const average = trend.reduce((sum, item) => sum + item.total, 0) / Math.max(1, trend.length);
 
               return (
-                <div className="relative flex h-36 items-end gap-1.5 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
-                  {/* grid lines at 25%, 50%, 75% */}
-                  <div className="pointer-events-none absolute inset-x-3 top-[25%] border-t border-slate-200/80" />
-                  <div className="pointer-events-none absolute inset-x-3 top-[50%] border-t border-slate-200/80" />
-                  <div className="pointer-events-none absolute inset-x-3 top-[75%] border-t border-slate-200/80" />
-                  <div className={`pointer-events-none absolute inset-x-3 border-t border-dashed border-amber-400/90 ${getAverageLineTopClass(average, maxValue)}`} />
+                <div className="relative flex h-28 items-end gap-1 rounded-lg border border-slate-100 bg-white p-2.5">
+                  <div className="pointer-events-none absolute inset-x-2.5 top-[25%] border-t border-slate-200/80" />
+                  <div className="pointer-events-none absolute inset-x-2.5 top-[50%] border-t border-slate-200/80" />
+                  <div className="pointer-events-none absolute inset-x-2.5 top-[75%] border-t border-slate-200/80" />
+                  <div className={`pointer-events-none absolute inset-x-2.5 border-t border-dashed border-amber-400/90 ${getAverageLineTopClass(average, maxValue)}`} />
                   {trend.map((point) => (
                     <div key={point.date} className="group relative flex min-w-0 flex-1 items-end justify-center">
                       <div className={`w-full rounded-t bg-indigo-500/85 transition group-hover:bg-indigo-600 ${getBarHeightClass(point.total, maxValue)}`} />
-                      <div className="pointer-events-none absolute -top-9 rounded-md bg-slate-900 px-2 py-1 text-[10px] text-white opacity-0 transition group-hover:opacity-100">
+                      <div className="pointer-events-none absolute -top-8 rounded-md bg-slate-900 px-2 py-1 text-[10px] text-white opacity-0 transition group-hover:opacity-100">
                         {formatDateLabel(point.date)}: {point.total}
                       </div>
                     </div>
@@ -648,22 +646,10 @@ export function AdminContactManager() {
               );
             })()
           )}
-          <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+          <div className="mt-1.5 flex items-center justify-between text-[11px] text-slate-500">
             <span>{trend[0]?.date ? formatDateLabel(trend[0].date) : "-"}</span>
             <span>{trend[trend.length - 1]?.date ? formatDateLabel(trend[trend.length - 1].date) : "-"}</span>
           </div>
-          {trend.length > 0 ? (
-            <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-slate-500">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-sm bg-indigo-500" />
-                Daily leads (bars)
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-[1px] w-4 border-t border-dashed border-amber-500" />
-                Average line ({trendWindow} days)
-              </span>
-            </div>
-          ) : null}
         </div>
       </div>
 
@@ -683,95 +669,183 @@ export function AdminContactManager() {
           disabled={selectedIds.length === 0 || isLoading}
           className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Delete Selected ({selectedIds.length})
+          Delete selected ({selectedIds.length})
         </button>
       </div>
 
-      {error ? <p className="mt-4 text-sm text-rose-600">{error}</p> : null}
-      {message ? <p className="mt-4 text-sm text-emerald-700">{message}</p> : null}
+      {error ? <p className="mt-3 text-sm text-rose-600">{error}</p> : null}
+      {message ? <p className="mt-3 text-sm text-emerald-700">{message}</p> : null}
 
-      {isLoading ? <p className="mt-4 text-sm text-slate-500">Loading contacts...</p> : null}
+      {isLoading ? <p className="mt-3 text-sm text-slate-500">Loading contacts...</p> : null}
 
       {!isLoading && items.length === 0 ? (
-        <p className="mt-4 text-sm text-slate-500">No contacts found for this filter.</p>
+        <p className="mt-3 text-sm text-slate-500">No contacts found for this filter.</p>
       ) : null}
 
-      <div className="mt-4 space-y-3">
-        {items.map((item) => (
-          <article key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="min-w-0 flex-1">
-                <label className="mb-2 inline-flex items-center gap-2 text-xs text-slate-500">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.includes(item.id)}
-                    onChange={() => toggleSelection(item.id)}
-                  />
-                  Select
-                </label>
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                  <span>{new Date(item.created_at).toLocaleString()}</span>
-                  <span>•</span>
-                  <span>{item.email}</span>
-                </div>
-                <h3 className="mt-1 text-base font-semibold text-slate-900">{item.subject}</h3>
-                <p className="mt-1 text-sm text-slate-700">From: {item.sender_name}</p>
-                <span className={`mt-2 inline-flex rounded-full border px-2 py-0.5 text-xs font-medium ${getStatusPillClass(item.status)}`}>
-                  {item.status === "in_progress" ? "In Progress" : item.status === "closed" ? "Closed" : "New"}
-                </span>
-                {item.status === "new" && getLeadAgeDays(item.created_at) >= SLA_DAYS ? (
-                  <span className="ml-2 mt-2 inline-flex rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700">
-                    SLA Alert: {getLeadAgeDays(item.created_at)}d
-                  </span>
-                ) : null}
-                <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-sm leading-6 text-slate-600">{item.message}</p>
-                {item.file_url ? (
-                  <a
-                    href={item.file_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-2 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-700"
-                  >
-                    View attached file
-                  </a>
-                ) : null}
-              </div>
+      {!isLoading && items.length > 0 ? (
+        <>
+          <div className="mt-3 hidden overflow-x-auto md:block">
+            <table className="min-w-full divide-y divide-slate-200 text-sm">
+              <thead>
+                <tr className="text-left text-[11px] uppercase tracking-[0.14em] text-slate-500">
+                  <th className="py-2.5 pr-3 font-medium">
+                    <span className="sr-only">Select</span>
+                  </th>
+                  <th className="py-2.5 pr-3 font-medium">Name</th>
+                  <th className="py-2.5 pr-3 font-medium">Email</th>
+                  <th className="py-2.5 pr-3 font-medium">Subject</th>
+                  <th className="py-2.5 pr-3 font-medium">Status</th>
+                  <th className="py-2.5 pr-3 font-medium">SLA</th>
+                  <th className="py-2.5 pr-3 font-medium">Date</th>
+                  <th className="py-2.5 font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {items.map((item) => {
+                  const ageDays = getLeadAgeDays(item.created_at);
+                  const slaAlert = item.status === "new" && ageDays >= SLA_DAYS;
 
-              <div className="flex flex-col gap-2">
-                <select
-                  value={item.status}
-                  onChange={(event) =>
-                    void handleStatusUpdate(item.id, event.target.value as "new" | "in_progress" | "closed")
-                  }
-                  title="Lead status"
-                  aria-label="Lead status"
-                  className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs font-medium text-slate-700 outline-none transition focus:border-indigo-600"
-                >
-                  <option value="new">New</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="closed">Closed</option>
-                </select>
-                <button
-                  type="button"
-                  onClick={() => setSelectedContact(item)}
-                  className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
-                >
-                  View Detail
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(item.id)}
-                  className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-700 transition hover:bg-rose-100"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+                  return (
+                    <tr key={item.id} className="align-middle hover:bg-slate-50/80">
+                      <td className="py-2.5 pr-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(item.id)}
+                          onChange={() => toggleSelection(item.id)}
+                          aria-label={`Select contact ${item.id}`}
+                        />
+                      </td>
+                      <td className="max-w-[140px] truncate py-2.5 pr-3 font-medium text-slate-900">{item.sender_name}</td>
+                      <td className="max-w-[180px] truncate py-2.5 pr-3 text-slate-600">{item.email}</td>
+                      <td className="max-w-[200px] truncate py-2.5 pr-3 text-slate-700">{item.subject}</td>
+                      <td className="py-2.5 pr-3">
+                        <span className={`inline-flex rounded-full border px-2 py-0.5 text-xs font-medium ${getStatusPillClass(item.status)}`}>
+                          {item.status === "in_progress" ? "In Progress" : item.status === "closed" ? "Closed" : "New"}
+                        </span>
+                      </td>
+                      <td className="py-2.5 pr-3 text-xs text-slate-600">
+                        {slaAlert ? (
+                          <span className="inline-flex rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 font-medium text-rose-700">
+                            {ageDays}d
+                          </span>
+                        ) : (
+                          <span className="text-slate-400">—</span>
+                        )}
+                      </td>
+                      <td className="whitespace-nowrap py-2.5 pr-3 text-xs text-slate-500">
+                        {new Date(item.created_at).toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "short",
+                          year: "2-digit",
+                        })}
+                      </td>
+                      <td className="py-2.5">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <select
+                            value={item.status}
+                            onChange={(event) =>
+                              void handleStatusUpdate(item.id, event.target.value as "new" | "in_progress" | "closed")
+                            }
+                            title="Lead status"
+                            aria-label="Lead status"
+                            className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-indigo-600"
+                          >
+                            <option value="new">New</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="closed">Closed</option>
+                          </select>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedContact(item)}
+                            className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
+                          >
+                            View
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(item.id)}
+                            className="rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 transition hover:bg-rose-100"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
 
-      <div className="mt-5 flex items-center justify-end gap-2">
+          <div className="mt-3 space-y-2 md:hidden">
+            {items.map((item) => {
+              const ageDays = getLeadAgeDays(item.created_at);
+              const slaAlert = item.status === "new" && ageDays >= SLA_DAYS;
+
+              return (
+                <article key={item.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      className="mt-1"
+                      checked={selectedIds.includes(item.id)}
+                      onChange={() => toggleSelection(item.id)}
+                      aria-label={`Select contact ${item.id}`}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-sm font-semibold text-slate-900">{item.sender_name}</p>
+                        <span className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-medium ${getStatusPillClass(item.status)}`}>
+                          {item.status === "in_progress" ? "In Progress" : item.status === "closed" ? "Closed" : "New"}
+                        </span>
+                        {slaAlert ? (
+                          <span className="inline-flex rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[11px] font-medium text-rose-700">
+                            SLA {ageDays}d
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="mt-0.5 truncate text-xs text-slate-500">{item.email}</p>
+                      <p className="mt-1 truncate text-sm text-slate-700">{item.subject}</p>
+                      <p className="mt-1 text-[11px] text-slate-500">{new Date(item.created_at).toLocaleString()}</p>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        <select
+                          value={item.status}
+                          onChange={(event) =>
+                            void handleStatusUpdate(item.id, event.target.value as "new" | "in_progress" | "closed")
+                          }
+                          title="Lead status"
+                          aria-label="Lead status"
+                          className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-700 outline-none transition focus:border-indigo-600"
+                        >
+                          <option value="new">New</option>
+                          <option value="in_progress">In Progress</option>
+                          <option value="closed">Closed</option>
+                        </select>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedContact(item)}
+                          className="rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
+                        >
+                          View
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(item.id)}
+                          className="rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-700 transition hover:bg-rose-100"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </>
+      ) : null}
+
+      <div className="mt-4 flex items-center justify-end gap-2">
         <button
           type="button"
           onClick={() => setPage((prev) => Math.max(1, prev - 1))}
@@ -791,8 +865,8 @@ export function AdminContactManager() {
         </button>
       </div>
 
-      <p className="mt-2 text-right text-xs text-slate-500">
-        Total {meta.total} submissions • {meta.totalPages} page(s)
+      <p className="mt-1.5 text-right text-xs text-slate-500">
+        Total {meta.total} submissions · {meta.totalPages} page(s)
       </p>
 
       {isConfirmingBulkDelete ? (
@@ -828,7 +902,6 @@ export function AdminContactManager() {
       {selectedContact ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 p-4">
           <div className="flex h-screen max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl border border-slate-200 bg-white shadow-panel md:p-0">
-            {/* Header */}
             <div className="flex flex-shrink-0 items-start justify-between gap-4 border-b border-slate-200 p-6">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-indigo-600">Edit Contact</p>
@@ -846,7 +919,6 @@ export function AdminContactManager() {
               </button>
             </div>
 
-            {/* Scrollable Content */}
             <div className="flex-1 overflow-auto p-6">
               <div className="grid gap-4 md:grid-cols-2">
               <FormInput
@@ -945,7 +1017,6 @@ export function AdminContactManager() {
               ) : null}
             </div>
 
-            {/* Footer */}
             <div className="flex flex-shrink-0 justify-end gap-2 border-t border-slate-200 p-6">
               <button
                 type="button"

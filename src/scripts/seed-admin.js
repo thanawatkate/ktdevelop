@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 require("dotenv").config({ path: ".env" });
-const crypto = require("crypto");
 const mysql = require("mysql2/promise");
 
 const {
@@ -13,6 +12,8 @@ const {
   ADMIN_SEED_USERNAME,
   ADMIN_SEED_EMAIL,
   ADMIN_SEED_PASSWORD,
+} = process.env;
+
 const bcrypt = require("bcryptjs");
 
 function hashPasswordSync(input) {
