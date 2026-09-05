@@ -45,7 +45,12 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return intlMiddleware(request);
+  const response = intlMiddleware(request);
+  const segments = pathname.split("/");
+  const locale = locales.includes(segments[1]) ? segments[1] : defaultLocale;
+  response.headers.set("x-middleware-request-x-locale", locale);
+  response.headers.set("x-locale", locale);
+  return response;
 }
 
 export const config = {

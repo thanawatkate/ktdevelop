@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_Thai } from "next/font/google";
 import { getLocale } from "next-intl/server";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const notoSansThai = Noto_Sans_Thai({
@@ -23,11 +24,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let locale = "th";
-  try {
-    locale = await getLocale();
-  } catch {
-    locale = "th";
+  const h = await headers();
+  let locale = h.get("x-locale");
+
+  if (!locale) {
+    try {
+      locale = await getLocale();
+    } catch {
+      locale = "th";
+    }
   }
 
   return (
