@@ -1,18 +1,9 @@
 import type { Metadata } from "next";
-import { Noto_Sans_Thai } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { SiteHeader } from "../../components/layout";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
-import "../globals.css";
-
-const notoSansThai = Noto_Sans_Thai({
-  subsets: ["latin", "thai"],
-  display: "swap",
-  variable: "--font-sans",
-  weight: ["400", "500", "600", "700"],
-});
 
 const locales = ["th", "en"];
 
@@ -26,10 +17,6 @@ export async function generateMetadata({
 
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-    title: {
-      default: "KT Develop",
-      template: "%s | KT Develop",
-    },
     alternates: {
       canonical: `/${locale}`,
       languages: {
@@ -54,6 +41,7 @@ export async function generateMetadata({
   };
 }
 
+
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -75,14 +63,10 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body className={`${notoSansThai.variable} font-sans text-slate-900 antialiased`} suppressHydrationWarning>
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          <SiteHeader />
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages} locale={locale}>
+      <SiteHeader />
+      {children}
+    </NextIntlClientProvider>
   );
 }
 
