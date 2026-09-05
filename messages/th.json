@@ -52,6 +52,11 @@
     "errorFileType": "รองรับเฉพาะไฟล์ PDF, DOC หรือ DOCX เท่านั้น",
     "errorFileSize": "ขนาดไฟล์ต้องไม่เกิน 10MB"
   },
+  "portfolio": {
+    "label": "พอร์ตโฟลิโอ",
+    "emptyTitle": "ยังไม่มีผลงานที่เผยแพร่",
+    "emptyDescription": "ผลงานจะแสดงที่นี่เมื่อได้รับการเผยแพร่จากระบบจัดการของผู้ดูแล"
+  },
   "footer": {
     "copyright": "© {year} KT Develop สงวนลิขสิทธิ์"
   }

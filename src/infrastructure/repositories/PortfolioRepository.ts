@@ -50,17 +50,27 @@ export class PortfolioRepository {
   }
 
   async getAll(): Promise<Portfolio[]> {
-    const [rows] = await dbPool.query<(Portfolio & RowDataPacket)[]>(
-      "SELECT id, title, description, client_name, image_url, is_published, created_at FROM portfolios WHERE deleted_at IS NULL ORDER BY created_at DESC"
-    );
-    return rows;
+    try {
+      const [rows] = await dbPool.query<(Portfolio & RowDataPacket)[]>(
+        "SELECT id, title, description, client_name, image_url, is_published, created_at FROM portfolios WHERE deleted_at IS NULL ORDER BY created_at DESC"
+      );
+      return rows;
+    } catch (error) {
+      console.error("Error fetching portfolios:", error);
+      return [];
+    }
   }
 
   async getAllPublished(): Promise<Portfolio[]> {
-    const [rows] = await dbPool.query<(Portfolio & RowDataPacket)[]>(
-      "SELECT id, title, description, client_name, image_url, is_published, created_at FROM portfolios WHERE is_published = 1 AND deleted_at IS NULL ORDER BY created_at DESC"
-    );
-    return rows;
+    try {
+      const [rows] = await dbPool.query<(Portfolio & RowDataPacket)[]>(
+        "SELECT id, title, description, client_name, image_url, is_published, created_at FROM portfolios WHERE is_published = 1 AND deleted_at IS NULL ORDER BY created_at DESC"
+      );
+      return rows;
+    } catch (error) {
+      console.error("Error fetching published portfolios:", error);
+      return [];
+    }
   }
 
   async getById(id: number): Promise<Portfolio | null> {

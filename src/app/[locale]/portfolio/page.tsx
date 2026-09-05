@@ -1,6 +1,7 @@
 import { PortfolioGrid } from "../../../components/portfolio";
 import { GetAllPortfolios } from "../../../core/use-cases/GetAllPortfolios";
 import { PortfolioRepository } from "../../../infrastructure/repositories/PortfolioRepository";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
@@ -8,10 +9,16 @@ export const metadata = {
   title: "Portfolio",
 };
 
-export default async function PortfolioPage() {
+interface PortfolioPageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function PortfolioPage({ params }: PortfolioPageProps) {
+  const { locale } = await params;
   const portfolioRepository = new PortfolioRepository();
   const getAllPortfolios = new GetAllPortfolios(portfolioRepository);
   const portfolios = await getAllPortfolios.execute();
+  const tPortfolio = await getTranslations({ locale, namespace: "portfolio" });
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
@@ -30,7 +37,14 @@ export default async function PortfolioPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        <PortfolioGrid portfolios={portfolios} />
+        <PortfolioGrid
+          portfolios={portfolios}
+          translations={{
+            label: tPortfolio("label"),
+            emptyTitle: tPortfolio("emptyTitle"),
+            emptyDescription: tPortfolio("emptyDescription"),
+          }}
+        />
       </section>
     </main>
   );

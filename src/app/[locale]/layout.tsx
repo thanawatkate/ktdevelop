@@ -1,19 +1,58 @@
 import type { Metadata } from "next";
+import { Noto_Sans_Thai } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { SiteHeader } from "../../components/layout";
 import { notFound } from "next/navigation";
 import { ReactNode } from "react";
+import "../globals.css";
+
+const notoSansThai = Noto_Sans_Thai({
+  subsets: ["latin", "thai"],
+  display: "swap",
+  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
+});
 
 const locales = ["th", "en"];
 
-export const metadata: Metadata = {
-  title: {
-    default: "KT Develop",
-    template: "%s | KT Develop",
-  },
-  description: "Corporate portfolio and contact platform built with Next.js, MySQL, and Clean Architecture.",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const isThai = locale === "th";
+
+  return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+    title: {
+      default: "KT Develop",
+      template: "%s | KT Develop",
+    },
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        th: "/th",
+        en: "/en",
+      },
+    },
+    openGraph: {
+      title: "KT Develop",
+      description: isThai
+        ? "แพลตฟอร์มพอร์ตโฟลิโอองค์กรและบริการพัฒนาซอฟต์แวร์ระดับมืออาชีพ"
+        : "Corporate portfolio and contact platform built with Next.js, MySQL, and Clean Architecture.",
+      siteName: "KT Develop",
+      type: "website",
+      locale: isThai ? "th_TH" : "en_US",
+      url: `/${locale}`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -32,12 +71,19 @@ export default async function LocaleLayout({
     notFound();
   }
 
+  setRequestLocale(locale);
   const messages = await getMessages();
 
   return (
-    <NextIntlClientProvider messages={messages} locale={locale}>
-      <SiteHeader />
-      {children}
-    </NextIntlClientProvider>
+    <html lang={locale} suppressHydrationWarning>
+      <body className={`${notoSansThai.variable} font-sans text-slate-900 antialiased`} suppressHydrationWarning>
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          <SiteHeader />
+          {children}
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
+
+

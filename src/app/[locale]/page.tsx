@@ -34,6 +34,7 @@ export default async function HomePage({ params }: PageProps) {
   const content = await contentRepository.getAllSections(locale);
   const tContact = await getTranslations({ locale, namespace: "contact" });
   const tFooter = await getTranslations({ locale, namespace: "footer" });
+  const tPortfolio = await getTranslations({ locale, namespace: "portfolio" });
   const expectedToken = process.env.ADMIN_ACCESS_TOKEN?.trim() || "";
   const providedToken = (await cookies()).get("admin_session")?.value?.trim() || "";
   const isAdmin = Boolean(expectedToken) && expectedToken === providedToken;
@@ -177,7 +178,14 @@ export default async function HomePage({ params }: PageProps) {
             {isAdmin ? (
               <AdminPortfolioGrid portfolios={portfolios} />
             ) : (
-              <PortfolioGrid portfolios={portfolios} />
+              <PortfolioGrid
+                portfolios={portfolios}
+                translations={{
+                  label: tPortfolio("label"),
+                  emptyTitle: tPortfolio("emptyTitle"),
+                  emptyDescription: tPortfolio("emptyDescription"),
+                }}
+              />
             )}
           </div>
         </div>

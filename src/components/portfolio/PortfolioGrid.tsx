@@ -1,23 +1,43 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { Portfolio } from "../../infrastructure/repositories/PortfolioRepository";
 
 interface PortfolioGridProps {
   portfolios: Portfolio[];
+  translations?: {
+    label?: string;
+    emptyTitle?: string;
+    emptyDescription?: string;
+  };
 }
 
-export function PortfolioGrid({ portfolios }: PortfolioGridProps) {
+export function PortfolioGrid({ portfolios, translations }: PortfolioGridProps) {
+  let t: (key: string) => string;
+  try {
+    t = useTranslations("portfolio");
+  } catch {
+    t = (key: string) => key;
+  }
+
+  const label = translations?.label ?? t("label");
+  const emptyTitle = translations?.emptyTitle ?? t("emptyTitle");
+  const emptyDescription = translations?.emptyDescription ?? t("emptyDescription");
+
   if (!portfolios.length) {
     return (
       <section className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-600">
-          Portfolio
+          {label}
         </p>
-        <h2 className="mt-3 text-2xl font-semibold text-slate-900">No published projects yet</h2>
+        <h2 className="mt-3 text-2xl font-semibold text-slate-900">{emptyTitle}</h2>
         <p className="mt-3 text-base text-slate-600">
-          Projects will appear here once they are published from the admin workflow.
+          {emptyDescription}
         </p>
       </section>
     );
   }
+
 
   return (
     <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">

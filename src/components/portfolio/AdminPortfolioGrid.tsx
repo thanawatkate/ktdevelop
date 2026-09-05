@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState, ChangeEvent } from "react";
+import { useTranslations } from "next-intl";
 import { FormInput, FormTextarea, FormCheckbox } from "../forms";
 
 interface PortfolioItem {
@@ -124,12 +125,23 @@ export function AdminPortfolioGrid({ portfolios: initialPortfolios }: Props) {
     }
   }
 
+  let tPortfolio: (key: string) => string;
+  try {
+    tPortfolio = useTranslations("portfolio");
+  } catch {
+    tPortfolio = (key: string) => key;
+  }
+
   if (!portfolios.length) {
     return (
       <section className="rounded-3xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-600">Portfolio</p>
-        <h2 className="mt-3 text-2xl font-semibold text-slate-900">No published projects yet</h2>
-        <p className="mt-3 text-base text-slate-600">Projects will appear here once they are published from the admin workflow.</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-600">
+          {tPortfolio("label")}
+        </p>
+        <h2 className="mt-3 text-2xl font-semibold text-slate-900">{tPortfolio("emptyTitle")}</h2>
+        <p className="mt-3 text-base text-slate-600">
+          {tPortfolio("emptyDescription")}
+        </p>
       </section>
     );
   }

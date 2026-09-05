@@ -52,6 +52,11 @@
     "officeLabel": "Office",
     "whyLabel": "Why Teams Choose Us"
   },
+  "portfolio": {
+    "label": "Portfolio",
+    "emptyTitle": "No published projects yet",
+    "emptyDescription": "Projects will appear here once they are published from the admin workflow."
+  },
   "footer": {
     "copyright": "© {year} KT Develop. All rights reserved."
   }
